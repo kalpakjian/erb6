@@ -1,0 +1,53 @@
+bedroom_choices = {
+    '1': '1 Bedroom',
+    '2': '2 Bedrooms',
+    '3': '3 Bedrooms',
+    '4': '4 Bedrooms',
+    '5': '5 Bedrooms',
+    '6': '6 Bedrooms',
+    '7': '7 Bedrooms',
+    '8': '8 Bedrooms',
+    '9': '9 Bedrooms',
+    '10': '10 Bedrooms'
+}
+
+price_choices = {
+    '1000000': '$1,000,000',
+    '3000000': '$3,000,000',
+    '5000000': '$5,000,000',
+    '7000000': '$7,000,000',
+    '9000000': '$9,000,000',
+    '11000000': '$11M',
+    '13000000': '$13M',
+    '15000000': '$15M',
+    '17000000': '$17M',
+    '19000000': '$19M',
+}
+
+district_choices = {
+    'Islands': 'Islands',
+    'Kowloon': 'Kowloon',
+    'New Territories': 'New Territories',
+    'Hong Kong Island': 'Hong Kong Island',
+    'Lantau Island': 'Lantau Island',
+    'Sai Kung': 'Sai Kung',
+    'Tuen Mun': 'Tuen Mun',
+    'Yuen Long': 'Yuen Long',
+    'Tsuen Wan': 'Tsuen Wan',
+    'Sham Shui Po': 'Sham Shui Po',
+    'Kwai Tsing': 'Kwai Tsing',
+    'Central and Western': 'Central and Western',
+    'Eastern': 'Eastern',
+    'Southern': 'Southern',
+    'Wan Chai': 'Wan Chai',
+    'Yau Tsim Mong': 'Yau Tsim Mong',
+    'Wong Tai Sin': 'Wong Tai Sin',
+    'Kowloon City': 'Kowloon City',
+    'Shatin': 'Shatin',
+    'Tai Po': 'Tai Po',
+    'North': 'North',
+    'Tseung Kwan O': 'Tseung Kwan O',
+    'Lamma Island': 'Lamma Island',
+    'Cheung Chau': 'Cheung Chau',
+    'Peng Chau': 'Peng Chau',
+}
