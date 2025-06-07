@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Gundam 商店 - 首頁</title>
+</head>
+<body>
+    <h1>歡迎來到 Gundam 線上商店</h1>
+    <h2>特色產品</h2>
+    <ul>
+        {% for product in featured_products %}
+            <li>
+                {{ product.name }} - 
+                <span style="text-decoration: line-through;">{{ product.price }} 元</span>
+                {{ product.discount_price }} 元
+                ({{ product.scale }})
+                {% if product.cover_image %}
+                    <img src="{{ product.cover_image.url }}" alt="{{ product.name }}" width="100">
+                {% endif %}
+            </li>
+        {% empty %}
+            <li>目前沒有特色產品</li>
+        {% endfor %}
+    </ul>
+    <a href="{% url 'product_list' %}">瀏覽所有產品</a>
+</body>
+</html>

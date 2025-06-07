@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ product.name }} - Gundam 商店</title>
+</head>
+<body>
+    <h1>{{ product.name }}</h1>
+    <p>價格：
+        {% if product.discount_price %}
+            <span style="text-decoration: line-through;">{{ product.price }} 元</span>
+            {{ product.discount_price }} 元
+        {% else %}
+            {{ product.price }} 元
+        {% endif %}
+    </p>
+    <p>比例尺：{{ product.scale }}</p>
+    <p>類別：{{ product.category.name }}</p>
+    <p>描述：{{ product.description }}</p>
+    <p>庫存：{{ product.stock }} 件</p>
+    {% if product.cover_image %}
+        <img src="{{ product.cover_image.url }}" alt="{{ product.name }}" width="200">
+    {% endif %}
+    <h3>實物圖片</h3>
+    <ul>
+        {% for image in product.images.all %}
+            <li>
+                <img src="{{ image.image.url }}" alt="{{ image.description }}" width="150">
+                {% if image.description %}
+                    <p>{{ image.description }}</p>
+                {% endif %}
+            </li>
+        {% empty %}
+            <li>無實物圖片</li>
+        {% endfor %}
+    </ul>
+    <a href="{% url 'product_list' %}">返回產品列表</a>
+</body>
+</html>

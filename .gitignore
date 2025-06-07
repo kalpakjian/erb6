@@ -1,0 +1,69 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Virtual environment
+venv/
+env/
+ENV/
+
+# Django
+*.sqlite3
+*.log
+staticfiles/
+local_settings.py
+
+# Media files
+media/
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Migrations
+# Comment out if you want to track migrations
+store/migrations/*
+!store/migrations/__init__.py
+
+# Static files (collected)
+collected_static/
+
+# IDE and editors
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+Desktop.ini
+ehthumbs.db
+
+# Testing and backups
+tests/fixtures/
+*.bak
+*.swp
+*~
+coverage/
+.coverage
+.tox/
+.pytest_cache/
+
+# Miscellaneous
+*.pid
+*.seed
+*.pid.lock
+*.gz
+*.zip
+*.tar.gz

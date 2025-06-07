@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Gundam 產品列表</title>
+</head>
+<body>
+    <h1>所有 Gundam 模型</h1>
+    <ul>
+        {% for product in products %}
+            <li>
+                {{ product.name }} - 
+                {% if product.discount_price %}
+                    <span style="text-decoration: line-through;">{{ product.price }} 元</span>
+                    {{ product.discount_price }} 元
+                {% else %}
+                    {{ product.price }} 元
+                {% endif %}
+                ({{ product.scale }})
+                {% if product.cover_image %}
+                    <img src="{{ product.cover_image.url }}" alt="{{ product.name }}" width="100">
+                {% endif %}
+            </li>
+        {% empty %}
+            <li>目前沒有產品</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
