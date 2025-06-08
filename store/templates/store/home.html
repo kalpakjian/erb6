@@ -1,26 +1,37 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Gundam 商店 - 首頁</title>
-</head>
-<body>
-    <h1>歡迎來到 Gundam 線上商店</h1>
-    <h2>特色產品</h2>
-    <ul>
-        {% for product in featured_products %}
-            <li>
-                {{ product.name }} - 
-                <span style="text-decoration: line-through;">{{ product.price }} 元</span>
-                {{ product.discount_price }} 元
-                ({{ product.scale }})
+{% extends 'store/base.html' %}
+
+{% block title %}Gundam 商店 - 首頁{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">歡迎來到 Gundam 線上商店</h1>
+<h2 class="mb-3">特色產品</h2>
+<div class="row">
+    {% for product in featured_products %}
+        <div class="col-md-4 col-sm-6 mb-4">
+            <div class="card h-100">
                 {% if product.cover_image %}
-                    <img src="{{ product.cover_image.url }}" alt="{{ product.name }}" width="100">
+                    <img src="{{ product.cover_image.url }}" class="card-img-top product-img" alt="{{ product.name }}">
+                {% else %}
+                    <img src="https://via.placeholder.com/200x200?text=No+Image" class="card-img-top product-img" alt="No Image">
                 {% endif %}
-            </li>
-        {% empty %}
-            <li>目前沒有特色產品</li>
-        {% endfor %}
-    </ul>
-    <a href="{% url 'product_list' %}">瀏覽所有產品</a>
-</body>
-</html>
+                <div class="card-body">
+                    <h5 class="card-title">{{ product.name }}</h5>
+                    <p class="card-text">
+                        {% if product.discount_price %}
+                            <span class="text-decoration-line-through text-muted">{{ product.price }} 元</span>
+                            <strong class="text-danger">{{ product.discount_price }} 元</strong>
+                        {% else %}
+                            {{ product.price }} 元
+                        {% endif %}
+                        <br>比例尺：{{ product.scale }}
+                    </p>
+                    <a href="{% url 'product_detail' product.pk %}" class="btn btn-primary">查看詳情</a>
+                </div>
+            </div>
+        </div>
+    {% empty %}
+        <p class="text-muted">目前沒有特色產品，請透過管理介面添加產品。</p>
+    {% endfor %}
+</div>
+<a href="{% url 'product_list' %}" class="btn btn-secondary">瀏覽所有產品</a>
+{% endblock %}

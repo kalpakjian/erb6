@@ -1,38 +1,46 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>{{ product.name }} - Gundam 商店</title>
-</head>
-<body>
-    <h1>{{ product.name }}</h1>
-    <p>價格：
-        {% if product.discount_price %}
-            <span style="text-decoration: line-through;">{{ product.price }} 元</span>
-            {{ product.discount_price }} 元
+{% extends 'store/base.html' %}
+
+{% block title %}{{ product.name }} - Gundam 商店{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">{{ product.name }}</h1>
+<div class="row">
+    <div class="col-md-6">
+        {% if product.cover_image %}
+            <img src="{{ product.cover_image.url }}" class="img-fluid rounded" alt="{{ product.name }}" style="max-height: 400px; object-fit: cover;">
         {% else %}
-            {{ product.price }} 元
+            <img src="https://via.placeholder.com/400x400?text=No+Image" class="img-fluid rounded" alt="No Image">
         {% endif %}
-    </p>
-    <p>比例尺：{{ product.scale }}</p>
-    <p>類別：{{ product.category.name }}</p>
-    <p>描述：{{ product.description }}</p>
-    <p>庫存：{{ product.stock }} 件</p>
-    {% if product.cover_image %}
-        <img src="{{ product.cover_image.url }}" alt="{{ product.name }}" width="200">
-    {% endif %}
-    <h3>實物圖片</h3>
-    <ul>
-        {% for image in product.images.all %}
-            <li>
-                <img src="{{ image.image.url }}" alt="{{ image.description }}" width="150">
-                {% if image.description %}
-                    <p>{{ image.description }}</p>
-                {% endif %}
-            </li>
-        {% empty %}
-            <li>無實物圖片</li>
-        {% endfor %}
-    </ul>
-    <a href="{% url 'product_list' %}">返回產品列表</a>
-</body>
-</html>
+    </div>
+    <div class="col-md-6">
+        <p><strong>價格：</strong>
+            {% if product.discount_price %}
+                <span class="text-decoration-line-through text-muted">{{ product.price }} 元</span>
+                <strong class="text-danger">{{ product.discount_price }} 元</strong>
+            {% else %}
+                {{ product.price }} 元
+            {% endif %}
+        </p>
+        <p><strong>比例尺：</strong> {{ product.scale }}</p>
+        <p><strong>類別：</strong> {{ product.category.name }}</p>
+        <p><strong>描述：</strong> {{ product.description }}</p>
+        <p><strong>庫存：</strong> {{ product.stock }} 件</p>
+        <a href="{% url 'product_list' %}" class="btn btn-secondary mt-3">返回產品列表</a>
+    </div>
+</div>
+<h2 class="mt-4">實物圖片</h2>
+<div class="row">
+    {% for image in product.images.all %}
+        <div class="col-md-4 col-sm-6 mb-3">
+            <div class="card">
+                <img src="{{ image.image.url }}" class="card-img-top" alt="{{ image.description }}" style="height: 150px; object-fit: cover;">
+                <div class="card-body">
+                    <p class="card-text">{{ image.description|default:"無描述" }}</p>
+                </div>
+            </div>
+        </div>
+    {% empty %}
+        <p class="text-muted">無實物圖片</p>
+    {% endfor %}
+</div>
+{% endblock %}
