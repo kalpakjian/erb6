@@ -121,6 +121,8 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+# 停用Cloudinary
+DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
 
 # 媒體檔案配置
 MEDIA_URL = '/media/'

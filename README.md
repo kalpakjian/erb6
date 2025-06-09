@@ -1,55 +1,21 @@
-# Gundam Online Store
+# Gundam Model Store
 
-A Django-based e-commerce platform for Gundam model kits, featuring product listings, discounts, and multiple images per product.
+A Django-based online store for Gundam models, featuring product listings, category browsing, and search functionality.
 
-## Setup Instructions
+## Features
+- Home page with featured discounted products
+- Paginated product and category listings (12 items per page)
+- Product detail pages with images and descriptions
+- Category browsing and search with pagination
+- Local media storage for product images
 
-1. **Clone the repository**:
-   ```bash
-   git clone https://github.com/kalpakjian/gundam-store.git
-   cd gundam-store
-   ```
+## Setup
+1. Clone the repository: `git clone https://github.com/your-username/gundam-store.git`
+2. Install dependencies: `pip install -r requirements.txt`
+3. Apply migrations: `python manage.py migrate`
+4. Run server: `python manage.py runserver`
 
-2. **Create a virtual environment**:
-   ```bash
-   python -m venv venv
-   source venv/bin/activate  # On Windows: venv\Scripts\activate
-   ```
-
-3. **Install dependencies**:
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-4. **Apply migrations**:
-   ```bash
-   python manage.py migrate
-   ```
-
-5. **Create a superuser**:
-   ```bash
-   python manage.py createsuperuser
-   ```
-
-6. **Run the server**:
-   ```bash
-   python manage.py runserver
-   ```
-
-7. Access the site at `http://127.0.0.1:8000/` and the admin interface at `http://127.0.0.1:8000/admin/`.
-
-## Current Features
-- Homepage with featured (discounted) products
-- Product list with prices, scales, and cover images
-- Admin interface for managing categories, products, and images
-- Support for discounts and multiple product images
-
-## Planned Features
-- Product detail pages
-- Shopping cart functionality
-- Search and category filtering
-- PostgreSQL database migration
-
-## Notes
-- Ensure `.env` is configured with `DJANGO_SECRET_KEY` (see `.env.example`).
-- Media files (e.g., product images) are stored in `media/`, which is ignored by Git.
+## Next Steps
+- Implement cart and checkout functionality
+- Add user authentication
+- Optimize for production with PostgreSQL and cloud storage

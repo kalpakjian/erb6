@@ -4,81 +4,45 @@ from django.utils import timezone
 from pathlib import Path
 import os
 
-def populate():
-    # Clear existing data (optional)
-    ProductImage.objects.all().delete()
-    Product.objects.all().delete()
-    Category.objects.all().delete()
+def populate_customers():
+    # Clear existing users (optional, be cautious in production)
+    User.objects.filter(is_superuser=False).delete()
 
-    # Create categories
-    wing = Category.objects.create(name="Gundam Wing", description="Models from Gundam Wing series")
-    seed = Category.objects.create(name="Gundam Seed", description="Models from Gundam Seed series")
-
-    # Create products
-    products = [
+    # Create customers
+    customers = [
         {
-            "name": "Gundam Wing Zero",
-            "description": "Iconic Wing Zero model with twin buster rifle.",
-            "price": 1200.00,
-            "discount_price": 1000.00,
-            "stock": 50,
-            "category": wing,
-            "scale": "1/144",
-            "images": [],
+            "username": "john_doe",
+            "email": "john.doe@example.com",
+            "first_name": "John",
+            "last_name": "Doe",
+            "password": "password123",
         },
         {
-            "name": "Gundam Destiny",
-            "description": "High-performance model from Gundam Seed Destiny.",
-            "price": 1500.00,
-            "discount_price": 1300.00,
-            "stock": 30,
-            "category": seed,
-            "scale": "1/100",
-            "images": [],
+            "username": "jane_smith",
+            "email": "jane.smith@example.com",
+            "first_name": "Jane",
+            "last_name": "Smith",
+            "password": "password123",
         },
         {
-            "name": "Gundam Strike Freedom",
-            "description": "Advanced model with DRAGOON system.",
-            "price": 1800.00,
-            "discount_price": None,
-            "stock": 20,
-            "category": seed,
-            "scale": "1/100",
-            "images": [],
-        },
-        {
-            "name": "Gundam Sandrock",
-            "description": "Heavy-armored model from Gundam Wing.",
-            "price": 1000.00,
-            "discount_price": 900.00,
-            "stock": 40,
-            "category": wing,
-            "scale": "1/144",
-            "images": [],
+            "username": "alex_wong",
+            "email": "alex.wong@example.com",
+            "first_name": "Alex",
+            "last_name": "Wong",
+            "password": "password123",
         },
     ]
 
-    for product_data in products:
-        product = Product.objects.create(
-            name=product_data["name"],
-            description=product_data["description"],
-            price=product_data["price"],
-            discount_price=product_data["discount_price"],
-            stock=product_data["stock"],
-            category=product_data["category"],
-            scale=product_data["scale"],
-            created_at=timezone.now(),
+    for customer in customers:
+        User.objects.create_user(
+            username=customer["username"],
+            email=customer["email"],
+            first_name=customer["first_name"],
+            last_name=customer["last_name"],
+            password=customer["password"],
         )
-        for img in product_data["images"]:
-            # Note: Ensure image files exist at specified paths
-            ProductImage.objects.create(
-                product=product,
-                image=img["path"],
-                description=img["description"],
-                order=0,
-            )
 
 if __name__ == "__main__":
-    print("Populating test data...")
-    populate()
+    print("Populating customer data...")
+    populate_customers()
     print("Done!")
