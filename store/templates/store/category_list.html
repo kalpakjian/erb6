@@ -3,31 +3,20 @@
 {% block title %}類別列表 - Gundam 商店{% endblock %}
 
 {% block content %}
-<div class="container mt-4">
-    <h1 class="mb-4">所有類別</h1>
-    {% if categories %}
-        <div class="row">
-            {% for category in categories %}
-                <div class="col-md-4 col-sm-6 mb-4">
-                    <div class="card h-100">
-                        <div class="card-body">
-                            <h5 class="card-title">
-                                <a href="{% url 'category_detail' category.pk %}">{{ category.name }}</a>
-                            </h5>
-                            <p class="card-text">
-                                {% if category.description %}
-                                    {{ category.description|truncatewords:20 }}
-                                {% else %}
-                                    無描述
-                                {% endif %}
-                            </p>
-                        </div>
-                    </div>
+<h1 class="mb-4">所有類別</h1>
+<div class="row">
+    {% for category in categories %}
+        <div class="col-md-4 col-sm-6 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">{{ category.name }}</h5>
+                    <p class="card-text">{{ category.description|truncatewords:20 }}</p>
+                    <a href="{% url 'category_detail' category.pk %}" class="btn btn-primary">查看類別</a>
                 </div>
-            {% endfor %}
+            </div>
         </div>
-    {% else %}
-        <p class="text-muted">目前沒有類別，請透過管理介面添加。</p>
-    {% endif %}
+    {% empty %}
+        <p class="text-muted">目前沒有類別。</p>
+    {% endfor %}
 </div>
 {% endblock %}
