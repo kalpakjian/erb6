@@ -66,4 +66,4 @@ coverage/
 *.pid.lock
 *.gz
 *.zip
-*.tar.gz
+*.tar.gz.env

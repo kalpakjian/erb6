@@ -8,4 +8,6 @@ urlpatterns = [
     path('categories/', views.category_list, name='category_list'),
     path('categories/<int:pk>/', views.category_detail, name='category_detail'),
     path('search/', views.search_products, name='search_products'),
+    path('share/', views.share_images, name='share_images'),
+    path('upload/', views.upload_image, name='upload_image'),
 ]

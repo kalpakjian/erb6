@@ -3,44 +3,58 @@
 {% block title %}{{ product.name }} - Gundam 商店{% endblock %}
 
 {% block content %}
-<h1 class="mb-4">{{ product.name }}</h1>
-<div class="row">
-    <div class="col-md-6">
-        {% if product.cover_image %}
-            <img src="{{ product.cover_image.url }}" class="img-fluid rounded" alt="{{ product.name }}" style="max-height: 400px; object-fit: cover;">
-        {% else %}
-            <img src="https://via.placeholder.com/400x400?text=No+Image" class="img-fluid rounded" alt="No Image">
-        {% endif %}
-    </div>
-    <div class="col-md-6">
-        <p><strong>價格：</strong>
-            {% if product.discount_price %}
-                <span class="text-decoration-line-through text-muted">{{ product.price }} 元</span>
-                <strong class="text-danger">{{ product.discount_price }} 元</strong>
+<div class="container product-detail">
+    <h1 class="mb-4">{{ product.name }}</h1>
+    <div class="row">
+        <div class="col-md-6">
+            <!-- 封面圖片 -->
+            {% if product.cloudinary_url %}
+                <img src="{{ product.cloudinary_url }}" class="img-fluid rounded" alt="{{ product.name }}" style="max-height: 400px; object-fit: cover;" onerror="console.error('Failed to load cover image: {{ product.cloudinary_url }}'); this.src='https://via.placeholder.com/400x400?text=無封面圖片';">
             {% else %}
-                {{ product.price }} 元
+                <img src="https://via.placeholder.com/400x400?text=無封面圖片" class="img-fluid rounded" alt="無封面圖片">
             {% endif %}
-        </p>
-        <p><strong>比例尺：</strong> {{ product.scale }}</p>
-        <p><strong>類別：</strong> {{ product.category.name }}</p>
-        <p><strong>描述：</strong> {{ product.description }}</p>
-        <p><strong>庫存：</strong> {{ product.stock }} 件</p>
-        <a href="{% url 'product_list' %}" class="btn btn-secondary mt-3">返回產品列表</a>
+        </div>
+        <div class="col-md-6">
+            <p><strong>價格：</strong>
+                {% if product.discount_price %}
+                    <span class="text-decoration-line-through text-muted">{{ product.price }} 元</span>
+                    <strong class="text-danger">{{ product.discount_price }} 元</strong>
+                {% else %}
+                    {{ product.price }} 元
+                {% endif %}
+            </p>
+            <p><strong>比例尺：</strong> {{ product.scale|default:"無" }}</p>
+            <p><strong>類別：</strong> {{ product.category.name }}</p>
+            <p><strong>描述：</strong> {{ product.description|default:"無描述" }}</p>
+            <p><strong>庫存：</strong> {{ product.stock }} 件</p>
+            <a href="{% url 'product_list' %}" class="btn btn-secondary mt-3">返回產品列表</a>
+        </div>
     </div>
-</div>
-<h2 class="mt-4">實物圖片</h2>
-<div class="row">
-    {% for image in product.images.all %}
-        <div class="col-md-4 col-sm-6 mb-3">
-            <div class="card">
-                <img src="{{ image.image.url }}" class="card-img-top" alt="{{ image.description }}" style="height: 150px; object-fit: cover;">
-                <div class="card-body">
-                    <p class="card-text">{{ image.description|default:"無描述" }}</p>
+    <h2 class="mt-4">實物圖片</h2>
+    <div class="row image-gallery">
+        {% for image in images %}
+            <div class="col-md-4 col-sm-6 mb-3">
+                <div class="card">
+                    {% if image.cloudinary_url %}
+                        <img src="{{ image.cloudinary_url }}" class="card-img-top" alt="{{ image.description|default:image.product.name }}" style="height: 150px; object-fit: cover;" onerror="console.error('Failed to load image: {{ image.cloudinary_url }}'); this.src='https://via.placeholder.com/200x150?text=無圖片';">
+                    {% else %}
+                        <img src="https://via.placeholder.com/200x150?text=無圖片" class="card-img-top" alt="無圖片">
+                    {% endif %}
+                    <div class="card-body">
+                        <p class="card-text">{{ image.description|default:"無描述" }}</p>
+                    </div>
                 </div>
             </div>
-        </div>
-    {% empty %}
-        <p class="text-muted">無實物圖片</p>
-    {% endfor %}
+        {% empty %}
+            <p class="text-muted">無實物圖片</p>
+        {% endfor %}
+    </div>
 </div>
+
+<style>
+    .product-detail { padding: 20px; }
+    .image-gallery { margin-top: 20px; }
+    .card { transition: transform 0.2s; }
+    .card:hover { transform: scale(1.05); }
+</style>
 {% endblock %}
