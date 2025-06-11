@@ -8,8 +8,8 @@
     {% for product in page_obj %}
         <div class="col-md-4 col-sm-6 mb-4">
             <div class="card h-100">
-                {% if product.cover_image %}
-                    <img src="{{ product.cover_image.url }}" class="card-img-top product-img" alt="{{ product.name }}" style="height: 200px; object-fit: cover;">
+                {% if product.cloudinary_url %}
+                    <img src="{{ product.cloudinary_url }}" class="card-img-top product-img" alt="{{ product.name }}" style="height: 200px; object-fit: cover;">
                 {% else %}
                     <img src="https://via.placeholder.com/200x200?text=No+Image" class="card-img-top product-img" alt="No Image">
                 {% endif %}
