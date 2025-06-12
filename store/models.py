@@ -63,6 +63,10 @@ class CartItem(models.Model):
 
     def __str__(self):
         return f"{self.quantity} x {self.product.name}"
+    
+    def get_subtotal(self):
+        price = self.product.discount_price if self.product.discount_price else self.product.price
+        return price * self.quantity
 
 class Order(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)

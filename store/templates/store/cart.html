@@ -1,15 +1,75 @@
-<!-- store/templates/store/cart.html -->
 {% extends 'store/base.html' %}
+
+{% block title %}購物車 - Gundam 商店{% endblock %}
+
 {% block content %}
-    <h2>購物車</h2>
-    {% if cart.items.exists %}
-        <ul>
-        {% for item in cart.items.all %}
-            <li>{{ item.product.name }} - 數量: {{ item.quantity }} - 小計: {{ item.product.price|floatformat:2 }}</li>
-        {% endfor %}
-        </ul>
-        <a href="{% url 'store:checkout' %}">前往結帳</a>
-    {% else %}
-        <p>購物車為空</p>
+<div class="container mt-4">
+    <h1 class="mb-4">您的購物車</h1>
+    {% if messages %}
+        <div class="alert alert-info">
+            {% for message in messages %}
+                {{ message }}
+            {% endfor %}
+        </div>
     {% endif %}
+    {% if cart.items.exists %}
+        <div class="table-responsive">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>商品</th>
+                        <th>圖片</th>
+                        <th>單價</th>
+                        <th>數量</th>
+                        <th>小計</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in cart.items.all %}
+                        <tr>
+                            <td>{{ item.product.name }}</td>
+                            <td>
+                                {% if item.product.get_cover_url %}
+                                    <img src="{{ item.product.get_cover_url }}" alt="{{ item.product.name }}" style="height: 50px; object-fit: cover;">
+                                {% else %}
+                                    <img src="https://via.placeholder.com/50x50?text=No+Image" alt="No Image">
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if item.product.discount_price %}
+                                    {{ item.product.discount_price }} 元
+                                {% else %}
+                                    {{ item.product.price }} 元
+                                {% endif %}
+                            </td>
+                            <td>
+                                <form action="{% url 'store:update_cart' item.id %}" method="post" class="d-inline">
+                                    {% csrf_token %}
+                                    <input type="number" name="quantity" value="{{ item.quantity }}" min="0" style="width: 60px;">
+                                    <button type="submit" class="btn btn-sm btn-primary">更新</button>
+                                </form>
+                            </td>
+                            <td>{{ item.get_subtotal|floatformat:2 }} 元</td>
+                            <td>
+                                <form action="{% url 'store:remove_from_cart' item.id %}" method="post" class="d-inline">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-sm btn-danger">移除</button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="text-end">
+            <h4>總金額：{{ total_price|floatformat:2 }} 元</h4>
+            <a href="{% url 'store:product_list' %}" class="btn btn-secondary">繼續購物</a>
+            <a href="#" class="btn btn-primary">前往結帳</a> <!-- 待結帳功能實現 -->
+        </div>
+    {% else %}
+        <p class="text-muted">購物車目前為空。</p>
+        <a href="{% url 'store:product_list' %}" class="btn btn-primary">瀏覽產品</a>
+    {% endif %}
+</div>
 {% endblock %}

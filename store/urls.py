@@ -17,6 +17,9 @@ urlpatterns = [
     path('upload/', views.upload_image, name='upload_image'),
     # 新增 endpoints
     path('cart/', views.cart, name='cart'),
+    path('cart/add/<int:product_id>/', views.add_to_cart, name='add_to_cart'),
+    path('cart/update/<int:item_id>/', views.update_cart, name='update_cart'),
+    path('cart/remove/<int:item_id>/', views.remove_from_cart, name='remove_from_cart'),
     path('checkout/', views.checkout, name='checkout'),
     path('login/', auth_views.LoginView.as_view(template_name='store/login.html'), name='login'),
     path('register/', views.register_view, name='register'),
