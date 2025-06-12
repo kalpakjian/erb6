@@ -107,3 +107,7 @@ LOGGING = {
         },
     },
 }
+
+# settings.py (末尾添加)
+LOGIN_REDIRECT_URL = 'store:home'
+LOGOUT_REDIRECT_URL = 'store:home'

@@ -1,7 +1,12 @@
+# store/urls.py
 from django.urls import path
 from . import views
+from django.contrib.auth import views as auth_views
+
+app_name = 'store'
 
 urlpatterns = [
+    # 現有 endpoints
     path('', views.home, name='home'),
     path('products/', views.product_list, name='product_list'),
     path('products/<int:pk>/', views.product_detail, name='product_detail'),
@@ -10,4 +15,11 @@ urlpatterns = [
     path('search/', views.search_products, name='search_products'),
     path('share/', views.share_images, name='share_images'),
     path('upload/', views.upload_image, name='upload_image'),
+    # 新增 endpoints
+    path('cart/', views.cart, name='cart'),
+    path('checkout/', views.checkout, name='checkout'),
+    path('login/', auth_views.LoginView.as_view(template_name='store/login.html'), name='login'),
+    path('register/', views.register_view, name='register'),
+    path('profile/', views.profile_view, name='profile'),
+    path('orders/', views.order_history, name='orders'),
 ]

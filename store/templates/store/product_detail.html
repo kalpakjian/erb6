@@ -27,7 +27,7 @@
             <p><strong>類別：</strong> {{ product.category.name }}</p>
             <p><strong>描述：</strong> {{ product.description|default:"無描述" }}</p>
             <p><strong>庫存：</strong> {{ product.stock }} 件</p>
-            <a href="{% url 'product_list' %}" class="btn btn-secondary mt-3">返回產品列表</a>
+            <a href="{% url 'store:product_list' %}" class="btn btn-secondary mt-3">返回產品列表</a>
         </div>
     </div>
     <h2 class="mt-4">實物圖片</h2>

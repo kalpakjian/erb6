@@ -5,7 +5,7 @@
 {% block content %}
 <div class="container mt-4">
     <h1 class="mb-3">搜尋結果：{{ query|default:"全部產品" }}</h1>
-    <form method="get" action="{% url 'search_products' %}" class="d-flex mb-4">
+    <form method="get" action="{% url 'store:search_products' %}" class="d-flex mb-4">
         <input type="text" name="q" class="form-control me-2" placeholder="搜尋產品..." value="{{ query }}" aria-label="搜尋">
         <button type="submit" class="btn btn-primary">搜尋</button>
     </form>
@@ -14,8 +14,8 @@
             {% for product in page_obj %}
                 <div class="col-md-4 col-sm-6 mb-4">
                     <div class="card h-100">
-                        {% if product.cover_image %}
-                            <img src="{{ product.cover_image.url }}" class="card-img-top" alt="{{ product.name }}" style="height: 200px; object-fit: cover;">
+                        {% if product.get_cover_url %}
+                            <img src="{{ product.get_cover_url }}" class="card-img-top" alt="{{ product.name }}" style="height: 200px; object-fit: cover;">
                         {% else %}
                             <img src="https://via.placeholder.com/200x200?text=No+Image" class="card-img-top" alt="No Image" style="height: 200px; object-fit: cover;">
                         {% endif %}
@@ -30,7 +30,7 @@
                                 {% endif %}
                                 <br>比例尺：{{ product.scale }}
                             </p>
-                            <a href="{% url 'product_detail' product.pk %}" class="btn btn-primary">查看詳情</a>
+                            <a href="{% url 'store:product_detail' product.pk %}" class="btn btn-primary">查看詳情</a>
                         </div>
                     </div>
                 </div>

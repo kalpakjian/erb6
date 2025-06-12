@@ -1,0 +1,15 @@
+<!-- store/templates/store/cart.html -->
+{% extends 'store/base.html' %}
+{% block content %}
+    <h2>購物車</h2>
+    {% if cart.items.exists %}
+        <ul>
+        {% for item in cart.items.all %}
+            <li>{{ item.product.name }} - 數量: {{ item.quantity }} - 小計: {{ item.product.price|floatformat:2 }}</li>
+        {% endfor %}
+        </ul>
+        <a href="{% url 'store:checkout' %}">前往結帳</a>
+    {% else %}
+        <p>購物車為空</p>
+    {% endif %}
+{% endblock %}

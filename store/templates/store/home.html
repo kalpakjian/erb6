@@ -1,3 +1,4 @@
+<!-- store/templates/store/home.html -->
 {% extends 'store/base.html' %}
 
 {% block title %}Gundam 商店 - 首頁{% endblock %}
@@ -25,7 +26,7 @@
                         {% endif %}
                         <br>比例尺：{{ product.scale }}
                     </p>
-                    <a href="{% url 'product_detail' product.pk %}" class="btn btn-primary">查看詳情</a>
+                    <a href="{% url 'store:product_detail' product.pk %}" class="btn btn-primary">查看詳情</a>
                 </div>
             </div>
         </div>
@@ -33,5 +34,5 @@
         <p class="text-muted">目前沒有特色產品，請透過管理介面添加產品。</p>
     {% endfor %}
 </div>
-<a href="{% url 'product_list' %}" class="btn btn-secondary">瀏覽所有產品</a>
+<a href="{% url 'store:product_list' %}" class="btn btn-secondary">瀏覽所有產品</a>
 {% endblock %}

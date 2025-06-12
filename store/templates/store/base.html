@@ -1,45 +1,49 @@
+<!-- store/templates/store/base.html -->
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Gundam 線上商店，提供各式高達模型與配件">
-    <meta name="keywords" content="高達, Gundam, 模型, 線上商店">
     <title>{% block title %}Gundam 商店{% endblock %}</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .product-img { height: 200px; object-fit: cover; }
+        .navbar-brand { font-weight: bold; }
+    </style>
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container-fluid">
-            <a class="navbar-brand" href="{% url 'home' %}">Gundam 商店</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="切換導航">
+            <a class="navbar-brand" href="{% url 'store:home' %}">Gundam 商店</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'product_list' %}">產品</a>
+                        <a class="nav-link" href="{% url 'store:product_list' %}">產品</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'category_list' %}">類別</a>
+                        <a class="nav-link" href="{% url 'store:category_list' %}">類別</a>
                     </li>
                 </ul>
-                <form method="get" action="{% url 'search_products' %}" class="d-flex my-2 my-lg-0">
-                    <label for="searchInput" class="visually-hidden">搜尋產品</label>
-                    <input id="searchInput" name="q" class="form-control me-2" type="search" placeholder="搜尋產品..." aria-label="搜尋">
+                <form class="d-flex" action="{% url 'store:search_products' %}" method="get">
+                    <input class="form-control me-2" type="search" name="q" placeholder="搜尋產品" aria-label="Search">
                     <button class="btn btn-outline-success" type="submit">搜尋</button>
                 </form>
             </div>
         </div>
     </nav>
-    <main class="container mt-4">
+
+    <div class="container mt-4">
         {% block content %}
         {% endblock %}
-    </main>
-    <footer class="text-center mt-4 py-3 bg-light">
+    </div>
+
+    <footer class="text-center mt-5 py-3 bg-light">
         <p>© 2025 Gundam 線上商店. All rights reserved.</p>
     </footer>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js" integrity="sha384-fbbOQedDUMZZ5KreZpsbe1LCZPVmfTnH7ois6mU1QK+m14rQ1l2bGBq41eYeM/fS" crossorigin="anonymous"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

@@ -1,0 +1,11 @@
+<!-- store/templates/store/login.html -->
+{% extends 'store/base.html' %}
+{% block content %}
+    <h2>登入</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">登入</button>
+    </form>
+    <a href="{% url 'store:register' %}">註冊新帳戶</a>
+{% endblock %}
