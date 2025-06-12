@@ -83,26 +83,28 @@ def upload_image(request):
         else:
             try:
                 product = get_object_or_404(Product, id=product_id)
+                # 儲存至本地
+                product_image = ProductImage.objects.create(
+                    product=product,
+                    image=image_file,
+                    description=description
+                )
+                logger.info(f'Saved local image for product {product.name}: {product_image.image.url}')
                 # 上傳至 Cloudinary
                 result = cloudinary.uploader.upload(
-                    image_file,
+                    product_image.image.path,
                     folder='gundam_store/images',
                     resource_type='image',
                     public_id=f"{product.name}_{os.path.splitext(image_file.name)[0]}",
                     quality='auto'
-                    # 移除 format='auto' 以避免 Invalid extension 錯誤
                 )
-                # 創建 ProductImage 記錄
-                ProductImage.objects.create(
-                    product=product,
-                    cloudinary_url=result['secure_url'],
-                    description=description
-                )
-                logger.info(f'Uploaded image for product {product.name}: {result["secure_url"]}')
+                product_image.cloudinary_url = result['secure_url']
+                product_image.save()
+                logger.info(f'Uploaded image to Cloudinary for product {product.name}: {result["secure_url"]}')
                 messages.success(request, '圖片上傳成功！')
                 return redirect('share_images')
             except Exception as e:
-                logger.error(f'Cloudinary upload failed: {str(e)}')
+                logger.error(f'Image upload failed: {str(e)}')
                 messages.error(request, f'上傳失敗：{str(e)}')
     products = Product.objects.all()
     return render(request, 'store/upload_image.html', {'products': products})

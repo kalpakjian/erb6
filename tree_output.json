@@ -51,10 +51,12 @@
             {"type":"file","name":"__init__.cpython-310.pyc"},
             {"type":"file","name":"fix_missing_cover_images.cpython-310.pyc"},
             {"type":"file","name":"import_images.cpython-310.pyc"},
+            {"type":"file","name":"update_image_paths.cpython-310.pyc"},
             {"type":"file","name":"upload_to_cloudinary.cpython-310.pyc"}
           ]},
           {"type":"file","name":"fix_missing_cover_images.py"},
           {"type":"file","name":"import_images.py"},
+          {"type":"file","name":"update_image_paths.py"},
           {"type":"file","name":"upload_to_cloudinary.py"}
         ]}
       ]},
@@ -89,5 +91,5 @@
     {"type":"file","name":"tree_output.json"}
   ]}
 ,
-  {"type":"report","directories":17,"files":57}
+  {"type":"report","directories":17,"files":59}
 ]

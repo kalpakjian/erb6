@@ -17,17 +17,31 @@ class Product(models.Model):
     scale = models.CharField(max_length=50, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     cover_image = models.ImageField(upload_to='products/covers/', blank=True, null=True)
-    cloudinary_url = models.URLField(max_length=500, blank=True)  # 新增欄位
+    cloudinary_url = models.URLField(max_length=500, blank=True)
+
+    def get_cover_url(self):
+        if self.cloudinary_url:
+            return self.cloudinary_url
+        elif self.cover_image:
+            return self.cover_image.url
+        return None
 
     def __str__(self):
         return self.name
 
 class ProductImage(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='images')
-    image = models.ImageField(upload_to='products/images/')
-    cloudinary_url = models.URLField(max_length=500, blank=True)  # 新增欄位
+    image = models.ImageField(upload_to='products/images/', blank=True, null=True)
+    cloudinary_url = models.URLField(max_length=500, blank=True)
     description = models.CharField(max_length=200, blank=True)
     order = models.PositiveIntegerField(default=0)
+
+    def get_image_url(self):
+        if self.cloudinary_url:
+            return self.cloudinary_url
+        elif self.image:
+            return self.image.url
+        return None
 
     def __str__(self):
         return f"Image for {self.product.name}"

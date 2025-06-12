@@ -8,8 +8,8 @@
     <div class="row">
         <div class="col-md-6">
             <!-- 封面圖片 -->
-            {% if product.cloudinary_url %}
-                <img src="{{ product.cloudinary_url }}" class="img-fluid rounded" alt="{{ product.name }}" style="max-height: 400px; object-fit: cover;" onerror="console.error('Failed to load cover image: {{ product.cloudinary_url }}'); this.src='https://via.placeholder.com/400x400?text=無封面圖片';">
+            {% if product.get_cover_url %}
+                <img src="{{ product.get_cover_url }}" class="img-fluid rounded" alt="{{ product.name }}" style="max-height: 400px; object-fit: cover;">
             {% else %}
                 <img src="https://via.placeholder.com/400x400?text=無封面圖片" class="img-fluid rounded" alt="無封面圖片">
             {% endif %}
@@ -35,8 +35,8 @@
         {% for image in images %}
             <div class="col-md-4 col-sm-6 mb-3">
                 <div class="card">
-                    {% if image.cloudinary_url %}
-                        <img src="{{ image.cloudinary_url }}" class="card-img-top" alt="{{ image.description|default:image.product.name }}" style="height: 150px; object-fit: cover;" onerror="console.error('Failed to load image: {{ image.cloudinary_url }}'); this.src='https://via.placeholder.com/200x150?text=無圖片';">
+                    {% if image.get_image_url %}
+                        <img src="{{ image.get_image_url }}" class="card-img-top" alt="{{ image.description|default:image.product.name }}" style="height: 150px; object-fit: cover;">
                     {% else %}
                         <img src="https://via.placeholder.com/200x150?text=無圖片" class="card-img-top" alt="無圖片">
                     {% endif %}
