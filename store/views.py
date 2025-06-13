@@ -82,7 +82,6 @@ def share_images(request):
     })
 
 # 上傳圖片
-# store/views.py
 def upload_image(request):
     if request.method == 'POST':
         product_id = request.POST.get('product_id')
@@ -116,7 +115,7 @@ def upload_image(request):
                 product_image.save()
                 logger.info(f'Uploaded image to Cloudinary for product {product.name}: {result["secure_url"]}')
                 messages.success(request, '圖片上傳成功！')
-                return redirect('store:share_images')  # 修正
+                return redirect('store:share_images')
             except Exception as e:
                 logger.error(f'Image upload failed: {str(e)}')
                 messages.error(request, f'上傳失敗：{str(e)}')
@@ -191,32 +190,54 @@ def remove_from_cart(request, item_id):
 # 結帳
 def checkout(request):
     session_key = request.session.session_key
+    if not session_key:
+        request.session.create()
+        session_key = request.session.session_key
     cart = get_object_or_404(Cart, user=request.user if request.user.is_authenticated else None, session_key=session_key)
     if request.method == 'POST':
         shipping_address = request.POST.get('shipping_address')
         if not shipping_address:
             messages.error(request, '請輸入送貨地址！')
-        elif not cart.items.exists():
+            return render(request, 'store/checkout.html', {'cart': cart})
+        if not cart.items.exists():
             messages.error(request, '購物車為空！')
-        else:
-            total_price = sum(item.product.price * item.quantity for item in cart.items.all())
-            order = Order.objects.create(
-                user=request.user if request.user.is_authenticated else None,
-                session_key=session_key,
-                shipping_address=shipping_address,
-                total_price=total_price,
-                status='pending'
+            return render(request, 'store/checkout.html', {'cart': cart})
+        
+        # 檢查庫存
+        for item in cart.items.all():
+            if item.product.stock < item.quantity:
+                messages.error(request, f'{item.product.name} 庫存不足，僅剩 {item.product.stock} 件！')
+                return render(request, 'store/checkout.html', {'cart': cart})
+
+        # 計算總價（考慮折扣價）
+        total_price = sum(item.get_subtotal() for item in cart.items.all())
+        
+        # 創建訂單
+        order = Order.objects.create(
+            user=request.user if request.user.is_authenticated else None,
+            session_key=session_key,
+            shipping_address=shipping_address,
+            total_price=total_price,
+            status='pending'
+        )
+        
+        # 創建訂單項目並更新庫存
+        for item in cart.items.all():
+            price = item.product.discount_price if item.product.discount_price else item.product.price
+            OrderItem.objects.create(
+                order=order,
+                product=item.product,
+                quantity=item.quantity,
+                price=price
             )
-            for item in cart.items.all():
-                OrderItem.objects.create(
-                    order=order,
-                    product=item.product,
-                    quantity=item.quantity,
-                    price=item.product.price
-                )
-            cart.items.all().delete()
-            messages.success(request, '訂單已提交！')
-            return redirect('store:orders')
+            item.product.stock -= item.quantity
+            item.product.save()
+        
+        # 清空購物車
+        cart.items.all().delete()
+        messages.success(request, '訂單已提交！')
+        return redirect('store:orders')
+    
     return render(request, 'store/checkout.html', {'cart': cart})
 
 # 用戶註冊

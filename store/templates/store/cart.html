@@ -1,4 +1,5 @@
 {% extends 'store/base.html' %}
+{% load store_tags %}
 
 {% block title %}購物車 - Gundam 商店{% endblock %}
 
@@ -63,9 +64,9 @@
             </table>
         </div>
         <div class="text-end">
-            <h4>總金額：{{ total_price|floatformat:2 }} 元</h4>
+            <h4>總金額：{{ cart.items.all|sum_items_price|floatformat:2 }} 元</h4>
             <a href="{% url 'store:product_list' %}" class="btn btn-secondary">繼續購物</a>
-            <a href="#" class="btn btn-primary">前往結帳</a> <!-- 待結帳功能實現 -->
+            <a href="{% url 'store:checkout' %}" class="btn btn-primary">前往結帳</a>
         </div>
     {% else %}
         <p class="text-muted">購物車目前為空。</p>
