@@ -1,6 +1,5 @@
 <form method="post" action="{% url 'accounts:register' %}">
     {% csrf_token %}
-    <input type="hidden" name="modal" value="true">
     {% if form.errors %}
         <div class="alert alert-danger">
             {% for error in form.non_field_errors %}

@@ -70,11 +70,6 @@
 <body>
     <div class="container">
         <h2>登入</h2>
-        {% if messages %}
-            {% for message in messages %}
-                <div class="error">{{ message }}</div>
-            {% endfor %}
-        {% endif %}
         {% if form.errors %}
             <div class="error">
                 {% for error in form.non_field_errors %}

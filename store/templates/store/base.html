@@ -96,6 +96,58 @@
 
     <!-- Bootstrap 5 JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script>
+        // AJAX 提交共用函數
+        function handleFormSubmit(form, modalId) {
+            fetch(form.action, {
+                method: 'POST',
+                body: new FormData(form),
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // 成功時重定向
+                    window.location.href = data.redirect_url;
+                } else {
+                    // 失敗時更新 modal 內容
+                    document.querySelector(`${modalId} .modal-body`).innerHTML = data.html;
+                    // 重新綁定表單事件
+                    const newForm = document.querySelector(`${modalId} form`);
+                    if (newForm) {
+                        newForm.addEventListener('submit', (e) => {
+                            e.preventDefault();
+                            handleFormSubmit(newForm, modalId);
+                        });
+                    }
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.querySelector(`${modalId} .modal-body`).innerHTML = '<div class="alert alert-danger">發生錯誤，請稍後再試。</div>';
+            });
+        }
+
+        // 綁定登入表單
+        const loginForm = document.querySelector('#loginModal form');
+        if (loginForm) {
+            loginForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                handleFormSubmit(loginForm, '#loginModal');
+            });
+        }
+
+        // 綁定註冊表單
+        const registerForm = document.querySelector('#registerModal form');
+        if (registerForm) {
+            registerForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                handleFormSubmit(registerForm, '#registerModal');
+            });
+        }
+    </script>
     {% block extra_js %}{% endblock %}
 </body>
 </html>

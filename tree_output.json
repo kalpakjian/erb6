@@ -23,8 +23,9 @@
       {"type":"directory","name":"templates","contents":[
         {"type":"directory","name":"accounts","contents":[
           {"type":"file","name":"logged_out.html"},
-          {"type":"file","name":"login_form.html"},
+          {"type":"file","name":"login_modal.html"},
           {"type":"file","name":"login.html"},
+          {"type":"file","name":"register_modal.html"},
           {"type":"file","name":"register.html"}
         ]},
         {"type":"file","name":"base.html"},
@@ -366,9 +367,7 @@
     {"type":"file","name":"temp_store.json"},
     {"type":"directory","name":"templates","contents":[
       {"type":"file","name":"base.html"},
-      {"type":"directory","name":"registration","contents":[
-        {"type":"file","name":"login.html"}
-      ]}
+      {"type":"directory","name":"registration"}
     ]},
     {"type":"file","name":"tree_output.json"}
   ]}
