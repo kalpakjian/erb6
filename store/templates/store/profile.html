@@ -1,0 +1,73 @@
+{% extends 'store/base.html' %}
+{% load static %}
+{% block content %}
+<div class="container mt-5">
+    <h2>個人資料</h2>
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}" role="alert">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+    
+    <!-- 個人資料表單 -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <h4 class="card-title">更新個人資料</h4>
+            <form method="post">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="first_name" class="form-label">姓名</label>
+                    <input type="text" class="form-control" id="first_name" name="first_name" value="{{ user.first_name }}" maxlength="50">
+                </div>
+                <div class="mb-3">
+                    <label for="email" class="form-label">電子郵件</label>
+                    <input type="email" class="form-control" id="email" name="email" value="{{ user.email }}" required>
+                </div>
+                <button type="submit" class="btn btn-primary">保存</button>
+            </form>
+        </div>
+    </div>
+    
+    <!-- 近期訂單 -->
+    <div class="card">
+        <div class="card-body">
+            <h4 class="card-title">近期訂單</h4>
+            {% if recent_orders %}
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>訂單編號</th>
+                            <th>日期</th>
+                            <th>總金額</th>
+                            <th>狀態</th>
+                            <th>詳情</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for order in recent_orders %}
+                            <tr>
+                                <td>{{ order.id }}</td>
+                                <td>{{ order.created_at|date:"Y-m-d H:i" }}</td>
+                                <td>NT$ {{ order.total_price }}</td>
+                                <td>{{ order.status }}</td>
+                                <td>
+                                    <ul>
+                                        {% for item in order.items.all %}
+                                            <li>{{ item.product.name }} x {{ item.quantity }} (NT$ {{ item.price }})</li>
+                                        {% endfor %}
+                                    </ul>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <a href="{% url 'store:orders' %}" class="btn btn-link">查看所有訂單</a>
+            {% else %}
+                <p>您尚未有任何訂單。</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -286,13 +286,35 @@ def checkout(request):
 @login_required
 def profile_view(request):
     if request.method == 'POST':
-        request.user.first_name = request.POST.get('first_name', '')
-        request.user.email = request.POST.get('email', '')
-        request.user.save()
-        messages.success(request, '個人資料已更新！')
+        try:
+            first_name = request.POST.get('first_name', '').strip()
+            email = request.POST.get('email', '').strip()
+            if not email:
+                messages.error(request, '電子郵件不能為空！')
+            elif len(first_name) > 50:
+                messages.error(request, '姓名長度不能超過 50 個字元！')
+            else:
+                request.user.first_name = first_name
+                request.user.email = email
+                request.user.save()
+                logger.info(f"User {request.user.username} updated profile: first_name={first_name}, email={email}")
+                messages.success(request, '個人資料已更新！')
+        except Exception as e:
+            logger.error(f"Error updating profile for user {request.user.username}: {str(e)}")
+            messages.error(request, '更新個人資料失敗，請稍後再試！')
         return redirect('store:profile')
+    
+    try:
+        recent_orders = Order.objects.filter(user=request.user).order_by('-created_at').select_related('user').prefetch_related('items__product')[:5]
+        logger.info(f"Retrieved {recent_orders.count()} recent orders for user {request.user.username}")
+    except Exception as e:
+        logger.error(f"Error retrieving orders for user {request.user.username}: {str(e)}")
+        messages.error(request, '無法載入近期訂單，請稍後再試！')
+        recent_orders = []
+
     context = {
         'user': request.user,
+        'recent_orders': recent_orders,
         'login_form': AuthenticationForm(),
         'register_form': UserCreationForm()
     }
