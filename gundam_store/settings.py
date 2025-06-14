@@ -25,6 +25,7 @@ INSTALLED_APPS = [
     'cloudinary',
     'cloudinary_storage',
     'store.apps.StoreConfig',
+    'accounts.apps.AccountsConfig',  # 新增 accounts app
 ]
 
 MIDDLEWARE = [
@@ -76,6 +77,7 @@ USE_I18N = True
 USE_TZ = True
 
 STATIC_URL = 'static/'
+STATICFILES_DIRS = [BASE_DIR / 'static']  # 如果有自訂 CSS，添加此行
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
@@ -108,6 +110,5 @@ LOGGING = {
     },
 }
 
-# settings.py (末尾添加)
 LOGIN_REDIRECT_URL = 'store:home'
 LOGOUT_REDIRECT_URL = 'store:home'

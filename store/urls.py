@@ -1,7 +1,6 @@
 # store/urls.py
 from django.urls import path
 from . import views
-from django.contrib.auth import views as auth_views
 
 app_name = 'store'
 
@@ -15,14 +14,13 @@ urlpatterns = [
     path('search/', views.search_products, name='search_products'),
     path('share/', views.share_images, name='share_images'),
     path('upload/', views.upload_image, name='upload_image'),
-    # 新增 endpoints
+    # 購物車與結帳
     path('cart/', views.cart, name='cart'),
     path('cart/add/<int:product_id>/', views.add_to_cart, name='add_to_cart'),
     path('cart/update/<int:item_id>/', views.update_cart, name='update_cart'),
     path('cart/remove/<int:item_id>/', views.remove_from_cart, name='remove_from_cart'),
     path('checkout/', views.checkout, name='checkout'),
-    path('login/', auth_views.LoginView.as_view(template_name='store/login.html'), name='login'),
-    path('register/', views.register_view, name='register'),
+    # 用戶相關
     path('profile/', views.profile_view, name='profile'),
     path('orders/', views.order_history, name='orders'),
 ]

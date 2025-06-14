@@ -8,4 +8,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('store/', include('store.urls')),  # store 應用程式路由
     path('', lambda request: redirect('store:home')),  # 根路徑重定向到 store:home
+    path('accounts/', include('accounts.urls')),  # accounts 應用程式路由
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

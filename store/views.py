@@ -9,7 +9,6 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.core.paginator import Paginator
 from django.db.models import Q
 from django.contrib import messages
-from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
 from .models import Product, Category, ProductImage, Cart, CartItem, Order, OrderItem
 import cloudinary.uploader
@@ -239,20 +238,6 @@ def checkout(request):
         return redirect('store:orders')
     
     return render(request, 'store/checkout.html', {'cart': cart})
-
-# 用戶註冊
-def register_view(request):
-    if request.method == 'POST':
-        form = UserCreationForm(request.POST)
-        if form.is_valid():
-            form.save()
-            messages.success(request, '註冊成功，請登入！')
-            return redirect('store:login')
-        else:
-            messages.error(request, '註冊失敗，請檢查表單！')
-    else:
-        form = UserCreationForm()
-    return render(request, 'store/register.html', {'form': form})
 
 # 用戶個人資料
 @login_required
