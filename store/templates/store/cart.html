@@ -30,11 +30,11 @@
                     {% for item in cart.items.all %}
                         <tr>
                             <td>{{ item.product.name }}</td>
-                            <td>
+                            <td class="text-center">
                                 {% if item.product.get_cover_url %}
-                                    <img src="{{ item.product.get_cover_url }}" alt="{{ item.product.name }}" style="height: 50px; object-fit: cover;">
+                                    <img src="{{ item.product.get_cover_url }}" alt="{{ item.product.name }}" style="max-height: 50px; width: auto; object-fit: contain;">
                                 {% else %}
-                                    <img src="https://via.placeholder.com/50x50?text=No+Image" alt="No Image">
+                                    <img src="https://via.placeholder.com/50x50?text=No+Image" alt="No Image" style="max-height: 50px; width: auto; object-fit: contain;">
                                 {% endif %}
                             </td>
                             <td>

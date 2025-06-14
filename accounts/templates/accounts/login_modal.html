@@ -12,14 +12,16 @@
             {% endfor %}
         </div>
     {% endif %}
-    <div class="mb-3">
+    <div class="form-group mb-3">
         <label for="id_username" class="form-label">使用者名稱</label>
         <input type="text" name="username" id="id_username" class="form-control" required value="{{ form.username.value|default:'' }}">
     </div>
-    <div class="mb-3">
+    <div class="form-group mb-3">
         <label for="id_password" class="form-label">密碼</label>
         <input type="password" name="password" id="id_password" class="form-control" required>
     </div>
-    <button type="submit" class="btn btn-primary w-100">登入</button>
-    <p class="mt-2 text-center">還沒有帳號？<a href="#" data-bs-toggle="modal" data-bs-target="#registerModal" data-bs-dismiss="modal">註冊</a></p>
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary w-100">登入</button>
+    </div>
+    <p class="mt-2 text-center">還沒有帳號？<a href="#" data-bs-toggle="modal" data-bs-target="#registerModal" data-bs-dismiss="modal" style="color: #ffffff;">註冊</a></p>
 </form>

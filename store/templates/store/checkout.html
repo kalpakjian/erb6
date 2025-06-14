@@ -32,7 +32,7 @@
                             <td>{{ item.product.name }}</td>
                             <td>
                                 {% if item.product.get_cover_url %}
-                                    <img src="{{ item.product.get_cover_url }}" alt="{{ item.product.name }}" style="height: 50px; object-fit: cover;">
+                                    <img src="{{ item.product.get_cover_url }}" alt="{{ item.product.name }}" style="height: 50px; width: auto;">
                                 {% else %}
                                     <img src="https://via.placeholder.com/50x50?text=No+Image" alt="No Image">
                                 {% endif %}

@@ -257,6 +257,7 @@
           {"type":"file","name":"utils.js"}
         ]}
       ]},
+      {"type":"directory","name":"images"},
       {"type":"directory","name":"img","contents":[
         {"type":"directory","name":"lightbox","contents":[
           {"type":"file","name":"close.png"},
@@ -372,5 +373,5 @@
     {"type":"file","name":"tree_output.json"}
   ]}
 ,
-  {"type":"report","directories":50,"files":274}
+  {"type":"report","directories":51,"files":274}
 ]

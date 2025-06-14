@@ -4,6 +4,7 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.http import JsonResponse
 from django.template.loader import render_to_string
+from django.views.decorators.http import require_POST
 
 def login_view(request):
     if request.method == 'POST':
@@ -56,6 +57,7 @@ def register_view(request):
         form = UserCreationForm()
     return render(request, 'accounts/register.html', {'form': form})
 
+@require_POST
 def logout_view(request):
     logout(request)
     return render(request, 'accounts/logged_out.html')
