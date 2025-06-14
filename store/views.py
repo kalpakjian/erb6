@@ -301,7 +301,15 @@ def profile_view(request):
 # 訂單歷史
 @login_required
 def order_history(request):
-    orders = Order.objects.filter(user=request.user).order_by('-created_at')
+    try:
+        orders = Order.objects.filter(user=request.user).order_by('-created_at').select_related('user').prefetch_related('items__product')
+        logger.info(f"Retrieved {orders.count()} orders for user {request.user.username}")
+        for order in orders:
+            logger.debug(f"Order {order.id}: {order.total_price}, {order.status}, {order.created_at}")
+    except Exception as e:
+        logger.error(f"Error retrieving orders for user {request.user.username}: {str(e)}")
+        messages.error(request, "無法載入訂單歷史，請稍後再試。")
+        orders = []
     context = {
         'orders': orders,
         'login_form': AuthenticationForm(),

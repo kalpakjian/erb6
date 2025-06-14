@@ -1,0 +1,38 @@
+{% extends 'store/base.html' %}
+{% block content %}
+<div class="container mt-5">
+    <h2>您的訂單歷史</h2>
+    {% if orders %}
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>訂單編號</th>
+                    <th>日期</th>
+                    <th>總金額</th>
+                    <th>狀態</th>
+                    <th>詳情</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in orders %}
+                    <tr>
+                        <td>{{ order.id }}</td>
+                        <td>{{ order.created_at|date:"Y-m-d H:i" }}</td>
+                        <td>NT$ {{ order.total_price }}</td>
+                        <td>{{ order.status }}</td>
+                        <td>
+                            <ul>
+                                {% for item in order.items.all %}
+                                    <li>{{ item.product.name }} x {{ item.quantity }} (NT$ {{ item.price }})</li>
+                                {% endfor %}
+                            </ul>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>您尚未有任何訂單。</p>
+    {% endif %}
+</div>
+{% endblock %}
