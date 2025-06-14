@@ -2,6 +2,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.shortcuts import render, redirect
 from django.contrib import messages
+from django.http import HttpResponseRedirect
 
 def login_view(request):
     if request.method == 'POST':
@@ -12,8 +13,12 @@ def login_view(request):
             return redirect('store:home')
         else:
             messages.error(request, '使用者名稱或密碼錯誤')
+            # 如果是 modal 請求，返回 modal 模板
+            if 'modal' in request.POST:
+                return render(request, 'accounts/login_modal.html', {'form': form})
     else:
         form = AuthenticationForm()
+    # 預設返回獨立頁面
     return render(request, 'accounts/login.html', {'form': form})
 
 def register_view(request):
@@ -28,6 +33,9 @@ def register_view(request):
             return redirect('store:home')
         else:
             messages.error(request, '請修正表單錯誤')
+            # 如果是 modal 請求，返回 modal 模板
+            if 'modal' in request.POST:
+                return render(request, 'accounts/register_modal.html', {'form': form})
     else:
         form = UserCreationForm()
     return render(request, 'accounts/register.html', {'form': form})

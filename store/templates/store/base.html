@@ -35,14 +35,14 @@
                                 <a class="nav-link" href="{% url 'store:profile' %}">個人資料</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="{% url 'accounts:logout' %}">登出</a>
+                                <a class="nav-link" href="{% url 'accounts:logout' %}" onclick="return confirm('確定要登出嗎？');">登出</a>
                             </li>
                         {% else %}
                             <li class="nav-item">
-                                <a class="nav-link" href="{% url 'accounts:login' %}">登入</a>
+                                <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#loginModal">登入</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="{% url 'accounts:register' %}">註冊</a>
+                                <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#registerModal">註冊</a>
                             </li>
                         {% endif %}
                     </ul>
@@ -54,6 +54,36 @@
             </div>
         </nav>
     </header>
+
+    <!-- 登入 Modal -->
+    <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="loginModalLabel">登入</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    {% include "accounts/login_modal.html" %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 註冊 Modal -->
+    <div class="modal fade" id="registerModal" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="registerModalLabel">註冊</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    {% include "accounts/register_modal.html" %}
+                </div>
+            </div>
+        </div>
+    </div>
 
     <main class="container mt-4">
         {% block content %}
