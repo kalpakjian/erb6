@@ -1,17 +1,30 @@
-<form method="post" action="{% url 'accounts:login' %}">
+<form method="post" action="{% url 'accounts:login' %}" id="login-form">
     {% csrf_token %}
+    <input type="hidden" name="modal" value="true">
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-danger">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
     {% if form.errors %}
         <div class="alert alert-danger">
-            使用者名稱或密碼錯誤
+            {% for error in form.non_field_errors %}
+                {{ error }}
+            {% endfor %}
+            {% for field in form %}
+                {% for error in field.errors %}
+                    {{ error }}
+                {% endfor %}
+            {% endfor %}
         </div>
     {% endif %}
     <div class="mb-3">
         <label for="id_username" class="form-label">使用者名稱</label>
-        {{ form.username }}
+        <input type="text" name="username" id="id_username" class="form-control" required value="{{ form.username.value|default:'' }}">
     </div>
     <div class="mb-3">
         <label for="id_password" class="form-label">密碼</label>
-        {{ form.password }}
+        <input type="password" name="password" id="id_password" class="form-control" required>
     </div>
     <button type="submit" class="btn btn-primary w-100">登入</button>
     <p class="mt-2 text-center">還沒有帳號？<a href="#" data-bs-toggle="modal" data-bs-target="#registerModal" data-bs-dismiss="modal">註冊</a></p>

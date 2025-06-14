@@ -10,6 +10,7 @@ from django.core.paginator import Paginator
 from django.db.models import Q
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from .models import Product, Category, ProductImage, Cart, CartItem, Order, OrderItem
 import cloudinary.uploader
 
@@ -19,7 +20,12 @@ logger = logging.getLogger(__name__)
 # 首頁
 def home(request):
     featured_products = Product.objects.filter(discount_price__isnull=False)[:3]
-    return render(request, 'store/home.html', {'featured_products': featured_products})
+    context = {
+        'featured_products': featured_products,
+        'login_form': AuthenticationForm(),
+        'register_form': UserCreationForm()
+    }
+    return render(request, 'store/home.html', context)
 
 # 產品列表
 def product_list(request):
@@ -27,7 +33,12 @@ def product_list(request):
     paginator = Paginator(products, 12)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
-    return render(request, 'store/product_list.html', {'page_obj': page_obj})
+    context = {
+        'page_obj': page_obj,
+        'login_form': AuthenticationForm(),
+        'register_form': UserCreationForm()
+    }
+    return render(request, 'store/product_list.html', context)
 
 # 產品詳情
 def product_detail(request, pk):
@@ -35,15 +46,23 @@ def product_detail(request, pk):
     images = product.images.all()
     logger.debug(f'Product {product.name}: cover_image={product.cover_image}, cloudinary_url={product.cloudinary_url}')
     logger.debug(f'Images: {[(img.image, img.cloudinary_url, img.description) for img in images]}')
-    return render(request, 'store/product_detail.html', {
+    context = {
         'product': product,
-        'images': images
-    })
+        'images': images,
+        'login_form': AuthenticationForm(),
+        'register_form': UserCreationForm()
+    }
+    return render(request, 'store/product_detail.html', context)
 
 # 分類列表
 def category_list(request):
     categories = Category.objects.all()
-    return render(request, 'store/category_list.html', {'categories': categories})
+    context = {
+        'categories': categories,
+        'login_form': AuthenticationForm(),
+        'register_form': UserCreationForm()
+    }
+    return render(request, 'store/category_list.html', context)
 
 # 分類詳情
 def category_detail(request, pk):
@@ -52,10 +71,13 @@ def category_detail(request, pk):
     paginator = Paginator(products, 12)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
-    return render(request, 'store/category_detail.html', {
+    context = {
         'category': category,
-        'page_obj': page_obj
-    })
+        'page_obj': page_obj,
+        'login_form': AuthenticationForm(),
+        'register_form': UserCreationForm()
+    }
+    return render(request, 'store/category_detail.html', context)
 
 # 產品搜尋
 def search_products(request):
@@ -66,19 +88,25 @@ def search_products(request):
     paginator = Paginator(products, 12)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
-    return render(request, 'store/search_results.html', {
+    context = {
         'page_obj': page_obj,
-        'query': query
-    })
+        'query': query,
+        'login_form': AuthenticationForm(),
+        'register_form': UserCreationForm()
+    }
+    return render(request, 'store/search_results.html', context)
 
 # 圖片分享
 def share_images(request):
     products = Product.objects.filter(cloudinary_url__isnull=False)
     product_images = ProductImage.objects.filter(cloudinary_url__isnull=False)
-    return render(request, 'store/share_images.html', {
+    context = {
         'products': products,
-        'product_images': product_images
-    })
+        'product_images': product_images,
+        'login_form': AuthenticationForm(),
+        'register_form': UserCreationForm()
+    }
+    return render(request, 'store/share_images.html', context)
 
 # 上傳圖片
 def upload_image(request):
@@ -119,7 +147,12 @@ def upload_image(request):
                 logger.error(f'Image upload failed: {str(e)}')
                 messages.error(request, f'上傳失敗：{str(e)}')
     products = Product.objects.all()
-    return render(request, 'store/upload_image.html', {'products': products})
+    context = {
+        'products': products,
+        'login_form': AuthenticationForm(),
+        'register_form': UserCreationForm()
+    }
+    return render(request, 'store/upload_image.html', context)
 
 # 購物車
 def cart(request):
@@ -131,7 +164,12 @@ def cart(request):
         user=request.user if request.user.is_authenticated else None,
         session_key=session_key
     )
-    return render(request, 'store/cart.html', {'cart': cart})
+    context = {
+        'cart': cart,
+        'login_form': AuthenticationForm(),
+        'register_form': UserCreationForm()
+    }
+    return render(request, 'store/cart.html', context)
 
 def add_to_cart(request, product_id):
     if request.method == 'POST':
@@ -237,7 +275,12 @@ def checkout(request):
         messages.success(request, '訂單已提交！')
         return redirect('store:orders')
     
-    return render(request, 'store/checkout.html', {'cart': cart})
+    context = {
+        'cart': cart,
+        'login_form': AuthenticationForm(),
+        'register_form': UserCreationForm()
+    }
+    return render(request, 'store/checkout.html', context)
 
 # 用戶個人資料
 @login_required
@@ -248,10 +291,20 @@ def profile_view(request):
         request.user.save()
         messages.success(request, '個人資料已更新！')
         return redirect('store:profile')
-    return render(request, 'store/profile.html', {'user': request.user})
+    context = {
+        'user': request.user,
+        'login_form': AuthenticationForm(),
+        'register_form': UserCreationForm()
+    }
+    return render(request, 'store/profile.html', context)
 
 # 訂單歷史
 @login_required
 def order_history(request):
     orders = Order.objects.filter(user=request.user).order_by('-created_at')
-    return render(request, 'store/orders.html', {'orders': orders})
+    context = {
+        'orders': orders,
+        'login_form': AuthenticationForm(),
+        'register_form': UserCreationForm()
+    }
+    return render(request, 'store/orders.html', context)

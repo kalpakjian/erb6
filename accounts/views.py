@@ -2,7 +2,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from django.http import HttpResponseRedirect
+from django.http import JsonResponse
 
 def login_view(request):
     if request.method == 'POST':
@@ -10,11 +10,13 @@ def login_view(request):
         if form.is_valid():
             user = form.get_user()
             login(request, user)
+            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                return JsonResponse({'status': 'success', 'redirect': '/'})
             return redirect('store:home')
         else:
             messages.error(request, '使用者名稱或密碼錯誤')
-            # 如果是 modal 請求，返回 modal 模板
-            if 'modal' in request.POST:
+            # 如果是 modal 請求或 AJAX，返回 modal 模板
+            if 'modal' in request.POST or request.headers.get('X-Requested-With') == 'XMLHttpRequest':
                 return render(request, 'accounts/login_modal.html', {'form': form})
     else:
         form = AuthenticationForm()
@@ -30,11 +32,12 @@ def register_view(request):
             password = form.cleaned_data.get('password1')
             user = authenticate(username=username, password=password)
             login(request, user)
+            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                return JsonResponse({'status': 'success', 'redirect': '/'})
             return redirect('store:home')
         else:
             messages.error(request, '請修正表單錯誤')
-            # 如果是 modal 請求，返回 modal 模板
-            if 'modal' in request.POST:
+            if 'modal' in request.POST or request.headers.get('X-Requested-With') == 'XMLHttpRequest':
                 return render(request, 'accounts/register_modal.html', {'form': form})
     else:
         form = UserCreationForm()

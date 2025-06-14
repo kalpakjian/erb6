@@ -59,14 +59,43 @@
         a:hover {
             text-decoration: underline;
         }
+        .error {
+            color: red;
+            font-size: 0.9em;
+            margin-bottom: 10px;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h2>註冊</h2>
+        {% if form.errors %}
+            <div class="error">
+                {% for error in form.non_field_errors %}
+                    {{ error }}
+                {% endfor %}
+                {% for field in form %}
+                    {% for error in field.errors %}
+                        {{ error }}
+                    {% endfor %}
+                {% endfor %}
+            </div>
+        {% endif %}
         <form method="post">
             {% csrf_token %}
-            {{ form.as_p }}
+            <div>
+                <label for="id_username">使用者名稱</label>
+                <input type="text" name="username" id="id_username" required value="{{ form.username.value|default:'' }}">
+            </div>
+            <div>
+                <label for="id_password1">密碼</label>
+                <input type="password" name="password1" id="id_password1" required>
+            </div>
+            <div>
+                <label for="id_password2">確認密碼</label>
+                <input type="password" name="password2" id="id_password2" required>
+            </div>
             <button type="submit">註冊</button>
         </form>
         <p>已有帳號？<a href="{% url 'accounts:login' %}">登入</a></p>
