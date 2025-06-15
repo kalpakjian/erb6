@@ -29,8 +29,8 @@ def home(request):
 
 # 產品列表
 def product_list(request):
-    products = Product.objects.all()
-    paginator = Paginator(products, 12)
+    products = Product.objects.all().order_by('?')
+    paginator = Paginator(products, 9)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     context = {

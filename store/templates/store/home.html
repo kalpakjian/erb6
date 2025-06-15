@@ -1,38 +1,60 @@
-<!-- store/templates/store/home.html -->
 {% extends 'store/base.html' %}
 
 {% block title %}Gundam 商店 - 首頁{% endblock %}
 
+{% block extra_css %}
+<style>
+    .product-img-container {
+        position: relative;
+        width: 100%;
+        aspect-ratio: 16 / 9; /* 確保 16:9 比例 */
+        overflow: hidden;
+    }
+    .product-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover; /* 保持圖片比例，填滿容器 */
+        transition: transform 0.3s ease; /* 懸停動畫效果 */
+    }
+    .product-img:hover {
+        transform: scale(1.05); /* 懸停時略微放大 */
+    }
+</style>
+{% endblock %}
+
 {% block content %}
-<h1 class="mb-4">歡迎來到 Gundam 線上商店</h1>
-<h2 class="mb-3">特色產品</h2>
-<div class="row">
-    {% for product in featured_products %}
-        <div class="col-md-4 col-sm-6 mb-4">
-            <div class="card h-100">
-                {% if product.get_cover_url %}
-                    <img src="{{ product.get_cover_url }}" class="card-img-top product-img" alt="{{ product.name }}">
-                {% else %}
-                    <img src="https://via.placeholder.com/200x200?text=No+Image" class="card-img-top product-img" alt="No Image">
-                {% endif %}
-                <div class="card-body">
-                    <h5 class="card-title">{{ product.name }}</h5>
-                    <p class="card-text">
-                        {% if product.discount_price %}
-                            <span class="text-decoration-line-through text-muted">{{ product.price }} 元</span>
-                            <strong class="text-danger">{{ product.discount_price }} 元</strong>
+<div class="container">
+    <h1 class="mb-4">歡迎來到 Gundam 線上商店</h1>
+    <h2 class="mb-3">特色產品</h2>
+    <div class="row">
+        {% for product in featured_products %}
+            <div class="col-md-4 col-sm-6 mb-4">
+                <div class="card h-100">
+                    <a href="{% url 'store:product_detail' product.pk %}" class="product-img-container">
+                        {% if product.get_cover_url %}
+                            <img src="{{ product.get_cover_url }}" class="product-img" alt="{{ product.name }}">
                         {% else %}
-                            {{ product.price }} 元
+                            <img src="https://via.placeholder.com/320x180?text=No+Image" class="product-img" alt="No Image">
                         {% endif %}
-                        <br>比例尺：{{ product.scale }}
-                    </p>
-                    <a href="{% url 'store:product_detail' product.pk %}" class="btn btn-primary">查看詳情</a>
+                    </a>
+                    <div class="card-body">
+                        <h5 class="card-title">{{ product.name }}</h5>
+                        <p class="card-text">
+                            {% if product.discount_price %}
+                                <span class="text-decoration-line-through text-muted">{{ product.price }} 元</span>
+                                <strong class="text-danger">{{ product.discount_price }} 元</strong>
+                            {% else %}
+                                {{ product.price }} 元
+                            {% endif %}
+                            <br>比例尺：{{ product.scale|default:"無" }}
+                        </p>
+                    </div>
                 </div>
             </div>
-        </div>
-    {% empty %}
-        <p class="text-muted">目前沒有特色產品，請透過管理介面添加產品。</p>
-    {% endfor %}
+        {% empty %}
+            <p class="text-muted">目前沒有特色產品，請透過管理介面添加產品。</p>
+        {% endfor %}
+    </div>
+    <a href="{% url 'store:product_list' %}" class="btn btn-secondary">瀏覽所有產品</a>
 </div>
-<a href="{% url 'store:product_list' %}" class="btn btn-secondary">瀏覽所有產品</a>
 {% endblock %}
