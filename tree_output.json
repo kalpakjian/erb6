@@ -38,19 +38,7 @@
       {"type":"file","name":"urls.py"},
       {"type":"file","name":"views.py"}
     ]},
-    {"type":"file","name":"backup_20250613_062139.tar.gz"},
-    {"type":"file","name":"backup_20250613_062146.tar.gz"},
-    {"type":"file","name":"data_backup_20250612_154836.json"},
-    {"type":"file","name":"db_backup_20250612_105315.sqlite3"},
-    {"type":"file","name":"db_backup_20250612_124517.sqlite3"},
-    {"type":"file","name":"db_backup_20250613_044847.json"},
-    {"type":"file","name":"db_backup_20250613_062129.json"},
-    {"type":"file","name":"db_backup_20250613_062145.json"},
     {"type":"file","name":"db.sqlite3"},
-    {"type":"file","name":"db.sqlite3.backup_20250613_044847"},
-    {"type":"file","name":"db.sqlite3.backup_20250613_054434"},
-    {"type":"file","name":"db.sqlite3.backup_20250613_062129"},
-    {"type":"file","name":"db.sqlite3.backup_20250613_062145"},
     {"type":"file","name":"debug.log"},
     {"type":"directory","name":"gundam_store","contents":[
       {"type":"file","name":"__init__.py"},
@@ -74,15 +62,13 @@
         {"type":"directory","name":"images"}
       ]}
     ]},
-    {"type":"file","name":"media_backup.tar.gz"},
-    {"type":"file","name":"media.zip"},
     {"type":"file","name":"migrate_images.py"},
     {"type":"file","name":"populate_data.py"},
+    {"type":"file","name":"project_backup_20250615_083406.tar.gz"},
+    {"type":"file","name":"project_backup_20250615_083537.tar.gz"},
     {"type":"file","name":"README.md"},
     {"type":"file","name":"requirements.txt"},
     {"type":"file","name":"restore_local_paths.py"},
-    {"type":"file","name":"shared_data_20250613_062130.json"},
-    {"type":"file","name":"shared_data_20250613_062145.json"},
     {"type":"directory","name":"static","contents":[
       {"type":"directory","name":"admin","contents":[
         {"type":"directory","name":"css","contents":[
@@ -353,25 +339,12 @@
           {"type":"file","name":"upload_image.html"}
         ]}
       ]},
-      {"type":"directory","name":"templatetags","contents":[
-        {"type":"file","name":"__init__.py"},
-        {"type":"directory","name":"__pycache__","contents":[
-          {"type":"file","name":"__init__.cpython-310.pyc"},
-          {"type":"file","name":"store_tags.cpython-310.pyc"}
-        ]},
-        {"type":"file","name":"store_tags.py"}
-      ]},
       {"type":"file","name":"tests.py"},
       {"type":"file","name":"urls.py"},
       {"type":"file","name":"views.py"}
     ]},
-    {"type":"file","name":"temp_store.json"},
-    {"type":"directory","name":"templates","contents":[
-      {"type":"file","name":"base.html"},
-      {"type":"directory","name":"registration"}
-    ]},
     {"type":"file","name":"tree_output.json"}
   ]}
 ,
-  {"type":"report","directories":51,"files":274}
+  {"type":"report","directories":47,"files":254}
 ]
