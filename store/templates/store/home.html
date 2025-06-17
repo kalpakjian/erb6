@@ -1,4 +1,5 @@
 {% extends 'store/base.html' %}
+{% load static %}
 
 {% block title %}Gundam 商店 - 首頁{% endblock %}
 
@@ -19,6 +20,16 @@
     .product-img:hover {
         transform: scale(1.05); /* 懸停時略微放大 */
     }
+    .title-container {
+        display: flex;
+        justify-content: space-between; /* 名稱左對齊，圖示右對齊 */
+        align-items: center; /* 垂直居中 */
+        margin-bottom: 1rem; /* 與下方價格的間距 */
+    }
+    .scale-icon {
+        max-width: 64px; /* 與產品列表頁一致 */
+        height: auto; /* 保持圖示比例 */
+    }
 </style>
 {% endblock %}
 
@@ -38,7 +49,12 @@
                         {% endif %}
                     </a>
                     <div class="card-body">
-                        <h5 class="card-title">{{ product.name }}</h5>
+                        <div class="title-container">
+                            <h5 class="card-title mb-0">{{ product.name }}</h5>
+                            {% if product.scale %}
+                                <img src="{% static 'scale/'|add:product.scale|lower|add:'.webp' %}" alt="{{ product.scale }} icon" class="scale-icon">
+                            {% endif %}
+                        </div>
                         <p class="card-text">
                             {% if product.discount_price %}
                                 <span class="text-decoration-line-through text-muted">{{ product.price }} 元</span>
@@ -46,7 +62,6 @@
                             {% else %}
                                 {{ product.price }} 元
                             {% endif %}
-                            <br>比例尺：{{ product.scale|default:"無" }}
                         </p>
                     </div>
                 </div>

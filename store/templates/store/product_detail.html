@@ -1,4 +1,5 @@
 {% extends 'store/base.html' %}
+{% load static %}
 
 {% block title %}{{ product.name }} - Gundam 商店{% endblock %}
 
@@ -9,12 +10,16 @@
         <div class="col-md-6">
             <!-- 封面圖片 -->
             {% if product.get_cover_url %}
-                <img src="{{ product.get_cover_url }}" class="img-fluid rounded" alt="{{ product.name }}" style="max-height: 400px; object-fit: cover;">
+                <img src="{{ product.get_cover_url }}" class="img-fluid rounded product-image" alt="{{ product.name }}" style="max-height: 400px; object-fit: cover;">
             {% else %}
-                <img src="https://via.placeholder.com/400x400?text=無封面圖片" class="img-fluid rounded" alt="無封面圖片">
+                <img src="https://via.placeholder.com/400x400?text=無封面圖片" class="img-fluid rounded product-image" alt="無封面圖片">
             {% endif %}
         </div>
         <div class="col-md-6">
+            <!-- 比例尺圖示置於價格上方 -->
+            {% if product.scale %}
+                <img src="{% static 'scale/'|add:product.scale|lower|add:'.webp' %}" alt="{{ product.scale }} icon" class="scale-icon mb-2">
+            {% endif %}
             <p><strong>價格：</strong>
                 {% if product.discount_price %}
                     <span class="text-decoration-line-through text-muted">HK${{ product.price }}</span>
@@ -23,7 +28,6 @@
                     HK${{ product.price }}
                 {% endif %}
             </p>
-            <p><strong>比例尺：</strong> {{ product.scale|default:"無" }}</p>
             <p><strong>類別：</strong> {{ product.category.name }}</p>
             <p><strong>描述：</strong> {{ product.description|default:"無描述" }}</p>
             <p><strong>庫存：</strong> {{ product.stock }} 件</p>
@@ -61,5 +65,11 @@
     .image-gallery { margin-top: 20px; }
     .card { transition: transform 0.2s; }
     .card:hover { transform: scale(1.05); }
+    .product-image { max-width: 100%; }
+    .scale-icon {
+        max-width: 64px; /* 放大兩倍 */
+        height: auto; /* 保持圖示比例 */
+        display: block; /* 確保圖示獨立一行 */
+    }
 </style>
 {% endblock %}

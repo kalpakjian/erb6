@@ -69,6 +69,8 @@
     {"type":"file","name":"README.md"},
     {"type":"file","name":"requirements.txt"},
     {"type":"file","name":"restore_local_paths.py"},
+    {"type":"file","name":"shared_data_20250616_114658.json"},
+    {"type":"file","name":"shared_data_20250617_164426.json"},
     {"type":"directory","name":"static","contents":[
       {"type":"directory","name":"admin","contents":[
         {"type":"directory","name":"css","contents":[
@@ -223,6 +225,9 @@
           ]}
         ]}
       ]},
+      {"type":"directory","name":"banners","contents":[
+        {"type":"file","name":"BD.png"}
+      ]},
       {"type":"directory","name":"css","contents":[
         {"type":"file","name":"admin.css"},
         {"type":"file","name":"all.css"},
@@ -260,6 +265,12 @@
         {"type":"file","name":"jquery-3.3.1.min.js"},
         {"type":"file","name":"lightbox.min.js"},
         {"type":"file","name":"main.js"}
+      ]},
+      {"type":"directory","name":"scale","contents":[
+        {"type":"file","name":"hg.webp"},
+        {"type":"file","name":"mg.webp"},
+        {"type":"file","name":"pg.webp"},
+        {"type":"file","name":"rg.webp"}
       ]},
       {"type":"directory","name":"webfonts","contents":[
         {"type":"file","name":"fa-brands-400.eot"},
@@ -528,9 +539,11 @@
             {"type":"file","name":"__init__.cpython-310.pyc"},
             {"type":"file","name":"check_images.cpython-310.pyc"},
             {"type":"file","name":"import_images.cpython-310.pyc"},
-            {"type":"file","name":"update_image_paths.cpython-310.pyc"}
+            {"type":"file","name":"update_image_paths.cpython-310.pyc"},
+            {"type":"file","name":"update_product_scale.cpython-310.pyc"}
           ]},
-          {"type":"file","name":"update_image_paths.py"}
+          {"type":"file","name":"update_image_paths.py"},
+          {"type":"file","name":"update_product_scale.py"}
         ]}
       ]},
       {"type":"directory","name":"migrations","contents":[
@@ -540,12 +553,16 @@
           {"type":"file","name":"0001_initial.cpython-310.pyc"},
           {"type":"file","name":"0002_product_cloudinary_url_productimage_cloudinary_url.cpython-310.pyc"},
           {"type":"file","name":"0003_alter_productimage_image.cpython-310.pyc"},
-          {"type":"file","name":"0004_cart_cartitem_order_orderitem.cpython-310.pyc"}
+          {"type":"file","name":"0004_cart_cartitem_order_orderitem.cpython-310.pyc"},
+          {"type":"file","name":"0005_category_banner_path.cpython-310.pyc"},
+          {"type":"file","name":"0006_alter_product_scale.cpython-310.pyc"}
         ]},
         {"type":"file","name":"0001_initial.py"},
         {"type":"file","name":"0002_product_cloudinary_url_productimage_cloudinary_url.py"},
         {"type":"file","name":"0003_alter_productimage_image.py"},
-        {"type":"file","name":"0004_cart_cartitem_order_orderitem.py"}
+        {"type":"file","name":"0004_cart_cartitem_order_orderitem.py"},
+        {"type":"file","name":"0005_category_banner_path.py"},
+        {"type":"file","name":"0006_alter_product_scale.py"}
       ]},
       {"type":"file","name":"models.py"},
       {"type":"directory","name":"templates","contents":[
@@ -580,5 +597,5 @@
     {"type":"file","name":"tree_output.json"}
   ]}
 ,
-  {"type":"report","directories":75,"files":432}
+  {"type":"report","directories":77,"files":445}
 ]
