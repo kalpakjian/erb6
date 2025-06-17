@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 class Category(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField(blank=True)
+    banner_path = models.CharField(max_length=200, blank=True, help_text='靜態檔案路徑，例如 banners/category1.jpg')
 
     def __str__(self):
         return self.name
@@ -51,7 +52,7 @@ class ProductImage(models.Model):
 class Cart(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
-    session_key = models.CharField(max_length=40, null=True, blank=True)  # 支援未登入用戶
+    session_key = models.CharField(max_length=40, null=True, blank=True)
 
     def __str__(self):
         return f"Cart for {self.user or self.session_key}"
@@ -79,7 +80,7 @@ class Order(models.Model):
     ], default='pending')
     shipping_address = models.TextField()
     total_price = models.DecimalField(max_digits=10, decimal_places=2)
-    session_key = models.CharField(max_length=40, null=True, blank=True)  # 支援未登入訂單
+    session_key = models.CharField(max_length=40, null=True, blank=True)
 
     def __str__(self):
         return f"Order {self.id} by {self.user or self.session_key}"
@@ -88,7 +89,7 @@ class OrderItem(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='items')
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField()
-    price = models.DecimalField(max_digits=10, decimal_places=2)  # 訂單時的價格
+    price = models.DecimalField(max_digits=10, decimal_places=2)
 
     def __str__(self):
         return f"{self.quantity} x {self.product.name}"
