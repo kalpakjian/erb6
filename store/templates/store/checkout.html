@@ -56,7 +56,7 @@
             {% csrf_token %}
             <div class="mb-3">
                 <label for="shipping_address" class="form-label">送貨地址</label>
-                <textarea class="form-control" id="shipping_address" name="shipping_address" rows="4" required></textarea>
+                <textarea class="form-control" id="shipping_address" name="shipping_address" rows="4" required>王子大廈801</textarea>
             </div>
             <button type="submit" class="btn btn-primary">確認訂單</button>
             <a href="{% url 'store:cart' %}" class="btn btn-secondary">返回購物車</a>

@@ -1,4 +1,3 @@
-# store/models.py
 from django.db import models
 from django.contrib.auth.models import User
 
@@ -11,13 +10,20 @@ class Category(models.Model):
         return self.name
 
 class Product(models.Model):
+    SCALE_CHOICES = [
+        ('RG', 'Real Grade'),
+        ('HG', 'High Grade'),
+        ('MG', 'Master Grade'),
+        ('PG', 'Perfect Grade'),
+    ]
+
     name = models.CharField(max_length=200)
     description = models.TextField(blank=True)
     price = models.DecimalField(max_digits=10, decimal_places=2)
     discount_price = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
     stock = models.PositiveIntegerField()
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='products')
-    scale = models.CharField(max_length=50, blank=True)
+    scale = models.CharField(max_length=2, choices=SCALE_CHOICES, default='RG', blank=False)
     created_at = models.DateTimeField(auto_now_add=True)
     cover_image = models.ImageField(upload_to='products/covers/', blank=True, null=True)
     cloudinary_url = models.URLField(max_length=500, blank=True)
@@ -27,6 +33,12 @@ class Product(models.Model):
             return self.cloudinary_url
         elif self.cover_image:
             return self.cover_image.url
+        return None
+
+    def get_scale_icon(self):
+        """返回比例尺對應的 icon 路徑"""
+        if self.scale:
+            return f'/static/scale/{self.scale.lower()}.webp'
         return None
 
     def __str__(self):

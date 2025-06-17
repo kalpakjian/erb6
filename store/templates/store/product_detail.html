@@ -17,10 +17,10 @@
         <div class="col-md-6">
             <p><strong>價格：</strong>
                 {% if product.discount_price %}
-                    <span class="text-decoration-line-through text-muted">{{ product.price }} 元</span>
-                    <strong class="text-danger">{{ product.discount_price }} 元</strong>
+                    <span class="text-decoration-line-through text-muted">HK${{ product.price }}</span>
+                    <strong class="text-danger">HK${{ product.discount_price }}</strong>
                 {% else %}
-                    {{ product.price }} 元
+                    HK${{ product.price }}
                 {% endif %}
             </p>
             <p><strong>比例尺：</strong> {{ product.scale|default:"無" }}</p>
