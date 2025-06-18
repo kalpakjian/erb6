@@ -19,7 +19,7 @@ logger = logging.getLogger(__name__)
 
 # 首頁
 def home(request):
-    featured_products = Product.objects.filter(discount_price__isnull=False)[:3]
+    featured_products = Product.objects.filter(discount_price__isnull=False).order_by('?')[:3]
     context = {
         'featured_products': featured_products,
         'login_form': AuthenticationForm(),
