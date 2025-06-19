@@ -5,62 +5,39 @@
 
 {% block extra_css %}
 <style>
-    .product-img-container {
-        position: relative;
-        width: 100%;
-        aspect-ratio: 16 / 9; /* 確保 16:9 比例 */
-        overflow: hidden;
-    }
-    .product-img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover; /* 保持圖片比例，填滿容器 */
-        transition: transform 0.3s ease; /* 懸停動畫效果 */
-    }
-    .product-img:hover {
-        transform: scale(1.05); /* 懸停時略微放大 */
-    }
-    .title-container {
-        display: flex;
-        justify-content: space-between; /* 名稱左對齊，圖示右對齊 */
-        align-items: center; /* 垂直居中 */
-        margin-bottom: 1rem; /* 與下方價格的間距 */
-    }
-    .scale-icon {
-        max-width: 64px; /* 與產品列表頁一致 */
-        height: auto; /* 保持圖示比例 */
-    }
+    .product-card { transition: transform 0.2s; }
+    .product-card:hover { transform: scale(1.05); }
+    .product-image { max-height: 200px; object-fit: cover; }
+    .scale-icon { max-width: 48px; height: auto; }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="container">
+<div class="container py-4">
     <h1 class="mb-4">歡迎來到 Gundam 線上商店</h1>
     <h2 class="mb-3">特色產品</h2>
     <div class="row">
         {% for product in featured_products %}
-            <div class="col-md-4 col-sm-6 mb-4">
-                <div class="card h-100">
-                    <a href="{% url 'store:product_detail' product.pk %}" class="product-img-container">
+            <div class="col-md-4 mb-4">
+                <div class="card product-card">
+                    <a href="{% url 'store:product_detail' product.id %}">
                         {% if product.get_cover_url %}
-                            <img src="{{ product.get_cover_url }}" class="product-img" alt="{{ product.name }}">
+                            <img src="{{ product.get_cover_url }}" class="card-img-top product-image" alt="{{ product.name }}">
                         {% else %}
-                            <img src="https://via.placeholder.com/320x180?text=No+Image" class="product-img" alt="No Image">
+                            <img src="{% static 'images/no-image.png' %}" class="card-img-top product-image" alt="無封面圖">
                         {% endif %}
                     </a>
                     <div class="card-body">
-                        <div class="title-container">
-                            <h5 class="card-title mb-0">{{ product.name }}</h5>
-                            {% if product.scale %}
-                                <img src="{% static 'scale/'|add:product.scale|lower|add:'.webp' %}" alt="{{ product.scale }} icon" class="scale-icon">
-                            {% endif %}
-                        </div>
+                        <h5 class="card-title">{{ product.name }}</h5>
+                        {% if product.scale %}
+                            <img src="{% static 'scale/'|add:product.scale|lower|add:'.webp' %}" alt="{{ product.scale }} icon" class="scale-icon mb-2">
+                        {% endif %}
                         <p class="card-text">
                             {% if product.discount_price %}
-                                <span class="text-decoration-line-through text-muted">{{ product.price }} 元</span>
-                                <strong class="text-danger">{{ product.discount_price }} 元</strong>
+                                <span class="text-decoration-line-through text-muted">HK${{ product.price }}</span>
+                                <strong class="text-danger">HK${{ product.discount_price }}</strong>
                             {% else %}
-                                {{ product.price }} 元
+                                HK${{ product.price }}
                             {% endif %}
                         </p>
                     </div>
@@ -70,6 +47,6 @@
             <p class="text-muted">目前沒有特色產品，請透過管理介面添加產品。</p>
         {% endfor %}
     </div>
-    <a href="{% url 'store:product_list' %}" class="btn btn-secondary">瀏覽所有產品</a>
+    <a href="{% url 'store:product_list' %}" class="btn btn-primary mt-3">瀏覽所有產品</a>
 </div>
 {% endblock %}

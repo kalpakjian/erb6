@@ -43,7 +43,7 @@ def product_list(request):
 # 產品詳情
 def product_detail(request, pk):
     product = get_object_or_404(Product, pk=pk)
-    images = product.images.all()
+    images = product.images.all().order_by('order')
     logger.debug(f'Product {product.name}: cover_image={product.cover_image}, cloudinary_url={product.cloudinary_url}')
     logger.debug(f'Images: {[(img.image, img.cloudinary_url, img.description) for img in images]}')
     context = {

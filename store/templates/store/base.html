@@ -1,116 +1,74 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="zh-tw">
+<html lang="zh-Hant">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Gundam 商店{% endblock %}</title>
-    <!-- Bootstrap 5 CSS -->
+    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <!-- 自訂 CSS -->
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-    <link rel="icon" href="{% static 'images/favicon.ico' %}">
-    <!-- 內聯 Modal 樣式（備用） -->
-    <style>
-        .custom-modal .modal-dialog {
-            max-width: 600px;
-            width: 100%;
-        }
-        .custom-modal .modal-content {
-            background-image: url('{% static "images/Untitled-166.jpg" %}');
-            background-size: cover;
-            background-position: center;
-            min-height: 500px;
-            color: white;
-        }
-        .custom-modal .modal-header {
-            border-bottom: none;
-        }
-        .custom-modal .modal-body {
-            padding: 20px;
-            background: rgba(0, 0, 0, 0.5);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        .custom-modal .modal-title,
-        .custom-modal .form-label {
-            color: white;
-        }
-        .custom-modal .btn-close {
-            filter: invert(1);
-        }
-        .custom-modal .alert-danger {
-            background-color: rgba(255, 0, 0, 0.8);
-            color: white;
-            width: 100%;
-        }
-        .custom-modal .form-group,
-        .custom-modal .form-control,
-        .custom-modal .btn-primary {
-            width: 100%;
-        }
-        @media (max-width: 576px) {
-            .custom-modal .modal-dialog {
-                max-width: 90%;
-            }
-        }
-    </style>
+    <link href="{% static 'css/style.css' %}" rel="stylesheet">
     {% block extra_css %}{% endblock %}
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-lg navbar-light bg-light">
-            <div class="container-fluid">
-                <a class="navbar-brand" href="{% url 'store:home' %}">Gundam 商店</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav me-auto">
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'store:product_list' %}">產品</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'store:category_list' %}">類別</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'store:cart' %}">購物車</a>
-                        </li>
-                        {% if user.is_authenticated %}
-                            <li class="nav-item">
-                                <a class="nav-link" href="{% url 'store:profile' %}">個人資料</a>
-                            </li>
-                            <li class="nav-item">
-                                <form method="post" action="{% url 'accounts:logout' %}" style="display: inline;">
-                                    {% csrf_token %}
-                                    <button type="submit" class="nav-link btn btn-link" onclick="return confirm('確定要登出嗎？');">登出</button>
-                                </form>
-                            </li>
-                            {% if user.is_staff %}
-                                <li class="nav-item">
-                                    <a class="nav-link" href="{% url 'admin:index' %}">管理後台</a>
+    <!-- 導航列 -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{% url 'store:home' %}">Gundam 商店</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'store:product_list' %}">產品</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'store:category_list' %}">類別</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'store:cart' %}">購物車</a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav">
+                    {% if user.is_authenticated %}
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                {{ user.username }}
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                                <li><a class="dropdown-item" href="{% url 'store:profile' %}">個人資料</a></li>
+                                <li>
+                                    <form action="{% url 'accounts:logout' %}" method="post">
+                                        {% csrf_token %}
+                                        <button type="submit" class="dropdown-item">登出</button>
+                                    </form>
                                 </li>
-                            {% endif %}
-                        {% else %}
-                            <li class="nav-item">
-                                <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#loginModal">登入</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#registerModal">註冊</a>
-                            </li>
-                        {% endif %}
-                    </ul>
-                    <form class="d-flex" action="{% url 'store:search_products' %}" method="get">
-                        <input class="form-control me-2" type="search" name="q" placeholder="搜尋" aria-label="Search">
-                        <button class="btn btn-outline-success" type="submit">🔍</button>
-                    </form>
-                </div>
+                                {% if user.is_staff %}
+                                    <li><a class="dropdown-item" href="{% url 'admin:index' %}">管理後台</a></li>
+                                {% endif %}
+                            </ul>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#loginModal">登入</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#registerModal">註冊</a>
+                        </li>
+                    {% endif %}
+                </ul>
+                <!-- 搜尋表單 -->
+                <form class="d-flex ms-3" method="get" action="{% url 'store:search_products' %}">
+                    <input class="form-control me-2" type="search" name="q" placeholder="搜尋產品..." aria-label="Search">
+                    <button class="btn btn-outline-light" type="submit">🔍</button>
+                </form>
             </div>
-        </nav>
-    </header>
+        </div>
+    </nav>
 
-    <!-- 登入 Modal -->
+    <!-- 登入模態框 -->
     <div class="modal fade custom-modal" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -125,7 +83,7 @@
         </div>
     </div>
 
-    <!-- 註冊 Modal -->
+    <!-- 註冊模態框 -->
     <div class="modal fade custom-modal" id="registerModal" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -140,56 +98,19 @@
         </div>
     </div>
 
-    <main class="container mt-4">
+    <!-- 主內容 -->
+    <main class="container py-4">
         {% block content %}
         {% endblock %}
     </main>
 
-    <footer class="bg-light text-center py-3 mt-4">
+    <!-- 頁腳 -->
+    <footer class="bg-dark text-white text-center py-3">
         © 2025 Gundam 線上商店. All rights reserved.
     </footer>
 
-    <!-- Bootstrap 5 JS -->
+    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-    <script>
-        function handleFormSubmit(form, modalId) {
-            fetch(form.action, {
-                method: 'POST',
-                body: new FormData(form),
-                headers: { 'X-Requested-With': 'XMLHttpRequest' }
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    window.location.href = data.redirect_url;
-                } else {
-                    const modalBody = document.querySelector(`${modalId} .modal-body`);
-                    modalBody.innerHTML = data.html;
-                    const newForm = modalBody.querySelector('form');
-                    if (newForm) {
-                        newForm.addEventListener('submit', (e) => {
-                            e.preventDefault();
-                            handleFormSubmit(newForm, modalId);
-                        });
-                    }
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                document.querySelector(`${modalId} .modal-body`).innerHTML = '<div class="alert alert-danger">發生錯誤，請稍後再試。</div>';
-            });
-        }
-
-        ['#loginModal', '#registerModal'].forEach(modalId => {
-            const form = document.querySelector(`${modalId} form`);
-            if (form) {
-                form.addEventListener('submit', (e) => {
-                    e.preventDefault();
-                    handleFormSubmit(form, modalId);
-                });
-            }
-        });
-    </script>
     {% block extra_js %}{% endblock %}
 </body>
 </html>
