@@ -57,22 +57,62 @@
     object-fit: cover;
 }
 
-/* 表單欄位（選項 1：Bootstrap 預設） */
+/* 表單欄位（Material Design 靈感） */
 .cart-input {
     height: 38px;
     font-size: 1rem;
-    border: 1px solid #ced4da;
-    border-radius: 4px;
-    transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    border: none;
+    border-bottom: 2px solid #7f8c8d;
+    border-radius: 0;
+    background-color: transparent;
+    transition: border-bottom-color 0.3s ease;
 }
 
 .cart-input:focus {
-    border-color: #007bff;
-    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    outline: none;
+    border-bottom-color: #8e44ad;
+    box-shadow: none;
 }
 
 /* 按鈕 */
 .btn-lg {
     padding: 10px 20px;
     font-size: 1.1rem;
+    border-radius: 4px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btn-lg:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.btn-primary {
+    background-color: #8e44ad;
+    border-color: #8e44ad;
+}
+
+.btn-primary:hover {
+    background-color: #703688;
+    border-color: #703688;
+}
+
+.btn-success {
+    background-color: #2ecc71;
+    border-color: #2ecc71;
+}
+
+.btn-success:hover {
+    background-color: #27ae60;
+    border-color: #27ae60;
+}
+
+.btn-secondary {
+    background-color: #95a5a6;
+    border-color: #95a5a6;
+}
+
+.btn-secondary:hover {
+    background-color: #7f8c8d;
+    border-color: #7f8c8d;
 }

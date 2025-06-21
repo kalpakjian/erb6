@@ -285,7 +285,7 @@ def checkout(request):
     }
     return render(request, 'store/checkout.html', context)
 
-# 用戶個人資料
+# 用 Fid個人資料
 @login_required
 def profile_view(request):
     # 確保 UserProfile 存在
