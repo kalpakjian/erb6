@@ -1,71 +1,78 @@
-/* static/css/style.css */
-.btn-secondary {
-    color: #fff !important;
+/* 通用佈局 */
+.container {
+    max-width: 1200px;
 }
 
-img {
-    width: 100%;
+/* 排版 */
+.page-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #2c3e50;
+    margin-bottom: 1.5rem;
 }
 
-.navbar {
-    opacity: 0.9;
-    text-transform: uppercase;
+.section-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #34495e;
+    margin-bottom: 1rem;
 }
 
-.navbar-nav .nav-link {
-    margin-left: 0.5rem;
-    margin-right: 0.5rem;
+.total-amount {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #e74c3c;
+    margin-top: 1rem;
 }
 
-/* Modal 樣式 */
-.custom-modal .modal-dialog {
-    max-width: 600px;
-    width: 100%;
+.empty-cart {
+    font-size: 1.1rem;
+    color: #7f8c8d;
 }
 
-.custom-modal .modal-content {
-    background-image: url('../images/Untitled-166.webp');
-    background-size: cover;
-    background-position: center;
-    min-height: 500px;
-    color: white;
+/* 表格樣式 */
+.cart-table {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.custom-modal .modal-header {
-    border-bottom: none;
+.cart-table th, .cart-table td {
+    vertical-align: middle;
+    padding: 12px;
 }
 
-.custom-modal .modal-body {
-    padding: 20px;
-    background: rgba(0, 0, 0, 0.5);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+.cart-table th {
+    background-color: #f8f9fa;
+    color: #2c3e50;
 }
 
-.custom-modal .modal-title,
-.custom-modal .form-label {
-    color: white;
+.cart-image-cell {
+    text-align: left;
 }
 
-.custom-modal .btn-close {
-    filter: invert(1);
+.cart-item-image {
+    width: 115px;
+    height: 72px;
+    object-fit: cover;
 }
 
-.custom-modal .alert-danger {
-    background-color: rgba(255, 0, 0, 0.8);
-    color: white;
-    width: 100%;
+/* 表單欄位（選項 1：Bootstrap 預設） */
+.cart-input {
+    height: 38px;
+    font-size: 1rem;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
 }
 
-.custom-modal .form-group,
-.custom-modal .form-control,
-.custom-modal .btn-primary {
-    width: 100%;
+.cart-input:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
 }
 
-@media (max-width: 576px) {
-    .custom-modal .modal-dialog {
-        max-width: 90%;
-    }
+/* 按鈕 */
+.btn-lg {
+    padding: 10px 20px;
+    font-size: 1.1rem;
 }

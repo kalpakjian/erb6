@@ -162,10 +162,7 @@ def cart(request):
     if not session_key:
         request.session.create()
         session_key = request.session.session_key
-    cart, created = Cart.objects.get_or_create(
-        user=request.user if request.user.is_authenticated else None,
-        session_key=session_key
-    )
+    cart = get_object_or_404(Cart, user=request.user if request.user.is_authenticated else None, session_key=session_key)
     context = {
         'cart': cart,
         'login_form': AuthenticationForm(),
@@ -188,10 +185,7 @@ def add_to_cart(request, product_id):
         if not session_key:
             request.session.create()
             session_key = request.session.session_key
-        cart, created = Cart.objects.get_or_create(
-            user=request.user if request.user.is_authenticated else None,
-            session_key=session_key
-        )
+        cart = get_object_or_404(Cart, user=request.user if request.user.is_authenticated else None, session_key=session_key)
         cart_item, item_created = CartItem.objects.get_or_create(
             cart=cart,
             product=product,
@@ -203,19 +197,26 @@ def add_to_cart(request, product_id):
         messages.success(request, f'已將 {product.name} 添加到購物車！')
     return redirect('store:cart')
 
-def update_cart(request, item_id):
+def update_cart(request):
     if request.method == 'POST':
-        cart_item = get_object_or_404(CartItem, pk=item_id)
-        quantity = int(request.POST.get('quantity', 1))
-        if quantity < 1:
-            cart_item.delete()
-            messages.success(request, f'已移除 {cart_item.product.name}！')
-        elif cart_item.product.stock < quantity:
-            messages.error(request, f'庫存不足，僅剩 {cart_item.product.stock} 件！')
-        else:
-            cart_item.quantity = quantity
-            cart_item.save()
-            messages.success(request, f'已更新 {cart_item.product.name} 數量！')
+        cart = get_object_or_404(Cart, user=request.user if request.user.is_authenticated else None, session_key=request.session.session_key)
+        for item in cart.items.all():
+            quantity_key = f'quantity_{item.id}'
+            if quantity_key in request.POST:
+                try:
+                    new_quantity = int(request.POST[quantity_key])
+                    if new_quantity < 1:
+                        item.delete()
+                        messages.success(request, f'已移除 {item.product.name}！')
+                    elif item.product.stock < new_quantity:
+                        messages.error(request, f'{item.product.name} 庫存不足，僅剩 {item.product.stock} 件！')
+                    else:
+                        item.quantity = new_quantity
+                        item.save()
+                        messages.success(request, f'已更新 {item.product.name} 數量！')
+                except ValueError:
+                    messages.error(request, f'請為 {item.product.name} 輸入有效的數量。')
+        return redirect('store:cart')
     return redirect('store:cart')
 
 def remove_from_cart(request, item_id):
@@ -288,7 +289,7 @@ def checkout(request):
 @login_required
 def profile_view(request):
     # 確保 UserProfile 存在
-    profile, created = UserProfile.objects.get_or_create(user=request.user)
+    profile = get_object_or_404(UserProfile, user=request.user)
     
     if request.method == 'POST':
         try:
