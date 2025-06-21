@@ -11,7 +11,9 @@ from django.db.models import Q
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
+from django.core.validators import FileExtensionValidator
 from .models import Product, Category, ProductImage, Cart, CartItem, Order, OrderItem
+from accounts.models import UserProfile
 import cloudinary.uploader
 
 # 設置日誌
@@ -285,19 +287,40 @@ def checkout(request):
 # 用戶個人資料
 @login_required
 def profile_view(request):
+    # 確保 UserProfile 存在
+    profile, created = UserProfile.objects.get_or_create(user=request.user)
+    
     if request.method == 'POST':
         try:
             first_name = request.POST.get('first_name', '').strip()
             email = request.POST.get('email', '').strip()
+            address = request.POST.get('address', '').strip()
+            avatar = request.FILES.get('avatar')
+            
+            # 驗證輸入
             if not email:
                 messages.error(request, '電子郵件不能為空！')
             elif len(first_name) > 50:
                 messages.error(request, '姓名長度不能超過 50 個字元！')
+            elif len(address) > 200:
+                messages.error(request, '地址長度不能超過 200 個字元！')
+            elif avatar and not avatar.name.lower().endswith(('.jpg', '.jpeg', '.png')):
+                messages.error(request, '頭像僅支援 JPG 或 PNG 格式！')
+            elif avatar and avatar.size > 2 * 1024 * 1024:  # 2MB
+                messages.error(request, '頭像檔案大小不得超過 2MB！')
             else:
+                # 更新 User 資料
                 request.user.first_name = first_name
                 request.user.email = email
                 request.user.save()
-                logger.info(f"User {request.user.username} updated profile: first_name={first_name}, email={email}")
+                
+                # 更新 UserProfile 資料
+                profile.address = address
+                if avatar:
+                    profile.avatar = avatar
+                profile.save()
+                
+                logger.info(f"User {request.user.username} updated profile: first_name={first_name}, email={email}, address={address}, avatar={avatar}")
                 messages.success(request, '個人資料已更新！')
         except Exception as e:
             logger.error(f"Error updating profile for user {request.user.username}: {str(e)}")
@@ -314,6 +337,7 @@ def profile_view(request):
 
     context = {
         'user': request.user,
+        'profile': profile,
         'recent_orders': recent_orders,
         'login_form': AuthenticationForm(),
         'register_form': UserCreationForm()

@@ -4,66 +4,66 @@
 {% block title %}結帳 - Gundam 商店{% endblock %}
 
 {% block content %}
-<div class="container mt-4">
-    <h1 class="mb-4">結帳</h1>
-    {% if messages %}
-        <div class="alert alert-info">
-            {% for message in messages %}
-                {{ message }}
+<h2>結帳</h2>
+
+{% if messages %}
+    <div class="alert alert-info">
+        {% for message in messages %}
+            {{ message }}
+        {% endfor %}
+    </div>
+{% endif %}
+
+{% if cart.items.exists %}
+    <h3>訂單摘要</h3>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>商品</th>
+                <th>圖片</th>
+                <th>單價</th>
+                <th>數量</th>
+                <th>小計</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in cart.items.all %}
+                <tr>
+                    <td>{{ item.product.name }}</td>
+                    <td>
+                        {% if item.product.get_cover_url %}
+                            <img src="{{ item.product.get_cover_url }}" alt="{{ item.product.name }}" style="max-width: 100px;">
+                        {% else %}
+                            <img src="/static/images/no-image.png" alt="無圖片" style="max-width: 100px;">
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if item.product.discount_price %}
+                            {{ item.product.discount_price }} 元
+                        {% else %}
+                            {{ item.product.price }} 元
+                        {% endif %}
+                    </td>
+                    <td>{{ item.quantity }}</td>
+                    <td>{{ item.get_subtotal|floatformat:2 }} 元</td>
+                </tr>
             {% endfor %}
+        </tbody>
+    </table>
+
+    <p><strong>總金額：{{ cart.items.all|sum_items_price|floatformat:2 }} 元</strong></p>
+
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="shipping_address">送貨地址</label>
+            <textarea class="form-control" id="shipping_address" name="shipping_address" rows="4" required>{% if user.is_authenticated and user.profile.address %}{{ user.profile.address }}{% endif %}</textarea>
         </div>
-    {% endif %}
-    {% if cart.items.exists %}
-        <h3>訂單摘要</h3>
-        <div class="table-responsive">
-            <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th>商品</th>
-                        <th>圖片</th>
-                        <th>單價</th>
-                        <th>數量</th>
-                        <th>小計</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for item in cart.items.all %}
-                        <tr>
-                            <td>{{ item.product.name }}</td>
-                            <td>
-                                {% if item.product.get_cover_url %}
-                                    <img src="{{ item.product.get_cover_url }}" alt="{{ item.product.name }}" style="height: 50px; width: auto;">
-                                {% else %}
-                                    <img src="https://via.placeholder.com/50x50?text=No+Image" alt="No Image">
-                                {% endif %}
-                            </td>
-                            <td>
-                                {% if item.product.discount_price %}
-                                    {{ item.product.discount_price }} 元
-                                {% else %}
-                                    {{ item.product.price }} 元
-                                {% endif %}
-                            </td>
-                            <td>{{ item.quantity }}</td>
-                            <td>{{ item.get_subtotal|floatformat:2 }} 元</td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-        <h4>總金額：{{ cart.items.all|sum_items_price|floatformat:2 }} 元</h4>
-        <form method="post">
-            {% csrf_token %}
-            <div class="mb-3">
-                <label for="shipping_address" class="form-label">送貨地址</label>
-                <textarea class="form-control" id="shipping_address" name="shipping_address" rows="4" required>王子大廈801</textarea>
-            </div>
-            <button type="submit" class="btn btn-primary">確認訂單</button>
-            <a href="{% url 'store:cart' %}" class="btn btn-secondary">返回購物車</a>
-        </form>
-    {% else %}
-        <p class="text-muted">購物車目前為空。</p>
-        <a href="{% url 'store:product_list' %}" class="btn btn-primary">瀏覽產品</a>
-    {% endif %}
-</div>
+        <button type="submit" class="btn btn-success">確認訂單</button>
+        <a href="{% url 'store:cart' %}" class="btn btn-secondary">返回購物車</a>
+    </form>
+{% else %}
+    <p>購物車目前為空。</p>
+    <a href="{% url 'store:product_list' %}" class="btn btn-primary">瀏覽產品</a>
+{% endif %}
 {% endblock %}

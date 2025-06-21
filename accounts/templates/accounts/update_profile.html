@@ -1,0 +1,50 @@
+{% extends 'store/base.html' %}
+
+{% block title %}更新個人資料{% endblock %}
+
+{% block content %}
+<div class="container mx-auto p-4">
+    <h2 class="text-2xl font-bold mb-4">更新個人資料</h2>
+    <form method="post" enctype="multipart/form-data" class="max-w-md space-y-4">
+        {% csrf_token %}
+        {% if form.errors %}
+            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+                {% for error in form.non_field_errors %}
+                    <p>{{ error }}</p>
+                {% endfor %}
+                {% for field in form %}
+                    {% for error in field.errors %}
+                        <p>{{ error }}</p>
+                    {% endfor %}
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <div>
+            <label for="{{ form.phone_number.id_for_label }}" class="block text-sm font-medium text-gray-700">電話號碼</label>
+            <input type="text" name="{{ form.phone_number.name }}" id="{{ form.phone_number.id_for_label }}"
+                   class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                   value="{{ form.phone_number.value|default:'' }}" placeholder="+886123456789">
+        </div>
+
+        <div>
+            <label for="{{ form.address.id_for_label }}" class="block text-sm font-medium text-gray-700">地址</label>
+            <textarea name="{{ form.address.name }}" id="{{ form.address.id_for_label }}"
+                      class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                      rows="4">{{ form.address.value|default:'' }}</textarea>
+        </div>
+
+        <div>
+            <label for="{{ form.avatar.id_for_label }}" class="block text-sm font-medium text-gray-700">頭像</label>
+            <input type="file" name="{{ form.avatar.name }}" id="{{ form.avatar.id_for_label }}"
+                   class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                   accept="image/*">
+            {% if form.instance.avatar %}
+                <p class="mt-2"><img src="{{ form.instance.avatar.url }}" alt="當前頭像" class="w-24 h-24 rounded-full"></p>
+            {% endif %}
+        </div>
+
+        <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">保存</button>
+    </form>
+</div>
+{% endblock %}
