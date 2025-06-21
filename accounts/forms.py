@@ -1,23 +1,27 @@
 from django import forms
-from .models import CustomerProfile
+from django.contrib.auth.models import User
+from .models import UserProfile
 
-class CustomerProfileForm(forms.ModelForm):
+class UserRegisterForm(forms.ModelForm):
+    password = forms.CharField(widget=forms.PasswordInput)
+    password_confirm = forms.CharField(widget=forms.PasswordInput, label='確認密碼')
+
     class Meta:
-        model = CustomerProfile
-        fields = ['phone', 'address', 'avatar']
-        widgets = {
-            'phone': forms.TextInput(attrs={'class': 'form-control'}),
-            'address': forms.Textarea(attrs={'class': 'form-control', 'rows': 4}),
-            'avatar': forms.Select(attrs={'class': 'form-control'}),
-        }
+        model = User
+        fields = ['username', 'email', 'password']
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        # 動態生成頭像選項
-        avatar_choices = [
-            ('icons/default_avatar.png', '預設頭像'),
-            ('icons/avatar1.png', '頭像 1'),
-            ('icons/avatar2.png', '頭像 2'),
-            # 可根據實際文件新增更多選項
-        ]
-        self.fields['avatar'].choices = avatar_choices
+    def clean(self):
+        cleaned_data = super().clean()
+        password = cleaned_data.get('password')
+        password_confirm = cleaned_data.get('password_confirm')
+        if password and password_confirm and password != password_confirm:
+            raise forms.ValidationError('密碼不匹配。')
+        return cleaned_data
+
+class UserProfileForm(forms.ModelForm):
+    class Meta:
+        model = UserProfile
+        fields = ['avatar', 'address']
+        widgets = {
+            'address': forms.Textarea(attrs={'rows': 3}),
+        }

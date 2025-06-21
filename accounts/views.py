@@ -1,63 +1,51 @@
-from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.shortcuts import render, redirect
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from django.http import JsonResponse
-from django.template.loader import render_to_string
-from django.views.decorators.http import require_POST
+from .forms import UserRegisterForm, UserProfileForm
+from .models import UserProfile
 
 def login_view(request):
     if request.method == 'POST':
-        form = AuthenticationForm(request, data=request.POST)
-        if form.is_valid():
-            user = form.get_user()
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
             login(request, user)
-            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-                return JsonResponse({
-                    'success': True,
-                    'redirect_url': '/'
-                })
             return redirect('store:home')
         else:
-            messages.error(request, '使用者名稱或密碼錯誤')
-            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-                html = render_to_string('accounts/login_modal.html', {'form': form}, request=request)
-                return JsonResponse({
-                    'success': False,
-                    'html': html
-                })
-    else:
-        form = AuthenticationForm()
-    return render(request, 'accounts/login.html', {'form': form})
+            messages.error(request, '無效的用戶名或密碼。')
+    return render(request, 'accounts/login.html')
 
 def register_view(request):
     if request.method == 'POST':
-        form = UserCreationForm(request.POST)
+        form = UserRegisterForm(request.POST)
         if form.is_valid():
             form.save()
             username = form.cleaned_data.get('username')
-            password = form.cleaned_data.get('password1')
-            user = authenticate(username=username, password=password)
-            login(request, user)
-            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-                return JsonResponse({
-                    'success': True,
-                    'redirect_url': '/'
-                })
-            return redirect('store:home')
-        else:
-            messages.error(request, '請修正表單錯誤')
-            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-                html = render_to_string('accounts/register_modal.html', {'form': form}, request=request)
-                return JsonResponse({
-                    'success': False,
-                    'html': html
-                })
+            messages.success(request, f'帳戶 {username} 已創建，請登入。')
+            return redirect('accounts:login')
     else:
-        form = UserCreationForm()
+        form = UserRegisterForm()
     return render(request, 'accounts/register.html', {'form': form})
 
-@require_POST
 def logout_view(request):
     logout(request)
-    return render(request, 'accounts/logged_out.html')
+    return redirect('store:home')
+
+@login_required
+def update_profile(request):
+    try:
+        user_profile = request.user.userprofile
+    except UserProfile.DoesNotExist:
+        user_profile = UserProfile.objects.create(user=request.user)
+
+    if request.method == 'POST':
+        form = UserProfileForm(request.POST, request.FILES, instance=user_profile)
+        if form.is_valid():
+            form.save()
+            messages.success(request, '個人資料已更新。')
+            return redirect('store:profile')
+    else:
+        form = UserProfileForm(instance=user_profile)
+    return render(request, 'accounts/update_profile.html', {'form': form})
