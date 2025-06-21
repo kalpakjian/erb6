@@ -1,84 +1,73 @@
 {% extends 'store/base.html' %}
 {% load static %}
+
+{% block title %}個人資料 - Gundam 商店{% endblock %}
+
 {% block content %}
-<div style="max-width: 800px; margin: 0 auto; padding: 20px;">
-    <h2 style="text-align: center; margin-bottom: 20px;">個人資料</h2>
+<div class="container mt-4">
+    <h1 class="page-title">個人資料</h1>
 
     {% if messages %}
-        <div style="margin-bottom: 20px;">
+        <div class="alert alert-info">
             {% for message in messages %}
-                <p style="color: {% if message.tags == 'error' %}red{% else %}green{% endif %}; text-align: center;">{{ message }}</p>
+                {{ message }}
             {% endfor %}
         </div>
     {% endif %}
 
-    <div style="display: flex; align-items: center; margin-bottom: 20px;">
-        {% if user.userprofile.avatar %}
-            <div style="width: 225px; height: 225px; border-radius: 50%; overflow: hidden; border: 3px solid #007bff; margin-right: 10px; background-color: white;">
-                <img src="{{ user.userprofile.avatar.url }}" alt="頭像" 
-                     style="width: 229.635px; height: 229.635px; object-fit: cover; display: block; transform: translate(-2.3175px, -2.3175px);">
+    <div class="card mb-4">
+        <div class="card-body">
+            <div class="d-flex align-items-center mb-3">
+                {% if user.userprofile.avatar %}
+                    <img src="{{ user.userprofile.avatar.url }}" alt="{{ user.username }}" class="rounded-circle me-3" style="width: 160px; height: 160px; object-fit: cover;">
+                {% else %}
+                    <img src="{% static 'images/no-image.png' %}" alt="無頭像" class="rounded-circle me-3" style="width: 160px; height: 160px; object-fit: cover;">
+                {% endif %}
+                <h4 class="mb-0">{{ user.username }}</h4>
             </div>
-        {% else %}
-            <div style="width: 225px; height: 225px; border-radius: 50%; overflow: hidden; border: 3px solid #007bff; margin-right: 10px; background-color: white;">
-                <img src="{% static 'icons/default_avatar.png' %}" alt="預設頭像" 
-                     style="width: 229.635px; height: 229.635px; object-fit: cover; display: block; transform: translate(-2.3175px, -2.3175px);">
-            </div>
-        {% endif %}
-        <h3 style="margin: 0;">{{ user.username }}</h3>
+            <p class="mb-2"><strong>電子郵件：</strong> {{ user.email }}</p>
+            <p class="mb-2"><strong>地址：</strong> 
+                {% if user.userprofile.address %}
+                    {{ user.userprofile.address }}
+                {% else %}
+                    未設定地址
+                {% endif %}
+            </p>
+            <a href="{% url 'accounts:update_profile' %}" class="btn btn-primary btn-lg">更新個人資料</a>
+        </div>
     </div>
 
-    <div style="margin-bottom: 20px;">
-        <p><strong>電子郵件：</strong> {{ user.email }}</p>
-        <p><strong>地址：</strong> 
-            {% if user.userprofile.address %}
-                {{ user.userprofile.address }}
-            {% else %}
-                未設定地址
-            {% endif %}
-        </p>
-    </div>
-
-    <a href="{% url 'accounts:update_profile' %}" 
-       style="display: inline-block; padding: 10px 20px; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px; margin-bottom: 30px;">
-        更新個人資料
-    </a>
-
-    <h3 style="margin-bottom: 20px;">近期訂單</h3>
+    <h2 class="section-title">近期訂單</h2>
     {% if recent_orders %}
-        <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
+        <table class="table table-bordered cart-table">
             <thead>
-                <tr style="background-color: #f8f9fa;">
-                    <th style="padding: 10px; text-align: left; border-bottom: 1px solid #dee2e6;">訂單編號</th>
-                    <th style="padding: 10px; text-align: left; border-bottom: 1px solid #dee2e6;">日期</th>
-                    <th style="padding: 10px; text-align: left; border-bottom: 1px solid #dee2e6;">總金額</th>
-                    <th style="padding: 10px; text-align: left; border-bottom: 1px solid #dee2e6;">狀態</th>
-                    <th style="padding: 10px; text-align: left; border-bottom: 1px solid #dee2e6;">詳情</th>
+                <tr>
+                    <th scope="col" style="width: 20%;">訂單編號</th>
+                    <th scope="col" style="width: 20%;">日期</th>
+                    <th scope="col" style="width: 20%;">總金額</th>
+                    <th scope="col" style="width: 20%;">狀態</th>
+                    <th scope="col" style="width: 20%;">詳情</th>
                 </tr>
             </thead>
             <tbody>
                 {% for order in recent_orders %}
                     <tr>
-                        <td style="padding: 10px; border-bottom: 1px solid #dee2e6;">{{ order.id }}</td>
-                        <td style="padding: 10px; border-bottom: 1px solid #dee2e6;">{{ order.created_at|date:"Y-m-d H:i" }}</td>
-                        <td style="padding: 10px; border-bottom: 1px solid #dee2e6;">HK$ {{ order.total_price }}</td>
-                        <td style="padding: 10px; border-bottom: 1px solid #dee2e6;">{{ order.status }}</td>
-                        <td style="padding: 10px; border-bottom: 1px solid #dee2e6;">
-                            <div style="margin-bottom: 10px;">
-                                {% for item in order.items.all %}
-                                    <p style="margin: 5px 0;">{{ item.product.name }} x {{ item.quantity }} (HK$ {{ item.price }})</p>
-                                {% endfor %}
-                            </div>
+                        <td>{{ order.id }}</td>
+                        <td>{{ order.created_at|date:"Y-m-d H:i" }}</td>
+                        <td>HK$ {{ order.total_price|floatformat:2 }}</td>
+                        <td>{{ order.status }}</td>
+                        <td>
+                            {% for item in order.items.all %}
+                                <div>{{ item.product.name }} x {{ item.quantity }} (HK$ {{ item.price|floatformat:2 }})</div>
+                            {% endfor %}
                         </td>
                     </tr>
                 {% endfor %}
             </tbody>
         </table>
-        <a href="{% url 'store:orders' %}" 
-           style="display: inline-block; padding: 10px 20px; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px;">
-            查看所有訂單
-        </a>
+        <a href="{% url 'store:orders' %}" class="btn btn-primary btn-lg">查看所有訂單</a>
     {% else %}
-        <p>您尚未有任何訂單。</p>
+        <p class="empty-cart">您尚未有任何訂單。</p>
     {% endif %}
 </div>
 {% endblock %}
