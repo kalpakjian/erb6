@@ -4,49 +4,49 @@
 {% block title %}Gundam 商店 - 首頁{% endblock %}
 
 {% block extra_css %}
-<style>
-    .product-card { transition: transform 0.2s; }
-    .product-card:hover { transform: scale(1.05); }
-    .product-image { max-height: 200px; object-fit: cover; }
-    .scale-icon { max-width: 48px; height: auto; }
-</style>
 {% endblock %}
 
 {% block content %}
-<div class="container py-4">
-    <h1 class="mb-4">歡迎來到 Gundam 線上商店</h1>
-    <h2 class="mb-3">特色產品</h2>
+<div class="container mt-4">
+    <h1>歡迎來到 Gundam 線上商店</h1>
+
+    <h2 class="mt-4">特色產品</h2>
     <div class="row">
         {% for product in featured_products %}
             <div class="col-md-4 mb-4">
-                <div class="card product-card">
-                    <a href="{% url 'store:product_detail' product.id %}">
+                <div class="card h-100">
+                    <a href="{% url 'store:product_detail' product.pk %}">
                         {% if product.get_cover_url %}
-                            <img src="{{ product.get_cover_url }}" class="card-img-top product-image" alt="{{ product.name }}">
+                            <img src="{{ product.get_cover_url }}" class="card-img-top img-fluid" alt="{{ product.name }}" style="height: 200px; object-fit: cover;">
                         {% else %}
-                            <img src="{% static 'images/no-image.png' %}" class="card-img-top product-image" alt="無封面圖">
+                            <img src="{% static 'images/no-image.png' %}" class="card-img-top img-fluid" alt="無圖片" style="height: 200px; object-fit: cover;">
                         {% endif %}
                     </a>
                     <div class="card-body">
-                        <h5 class="card-title">{{ product.name }}</h5>
+                        <h5 class="card-title">
+                            <a href="{% url 'store:product_detail' product.pk %}">{{ product.name }}</a>
+                        </h5>
                         {% if product.scale %}
-                            <img src="{% static 'scale/'|add:product.scale|lower|add:'.webp' %}" alt="{{ product.scale }} icon" class="scale-icon mb-2">
+                            <p class="card-text">{{ product.scale }}</p>
                         {% endif %}
                         <p class="card-text">
                             {% if product.discount_price %}
-                                <span class="text-decoration-line-through text-muted">HK${{ product.price }}</span>
-                                <strong class="text-danger">HK${{ product.discount_price }}</strong>
+                                <span class="text-muted text-decoration-line-through">{{ product.price }} 元</span>
+                                <span class="text-danger">{{ product.discount_price }} 元</span>
                             {% else %}
-                                HK${{ product.price }}
+                                <span>{{ product.price }} 元</span>
                             {% endif %}
                         </p>
                     </div>
                 </div>
             </div>
         {% empty %}
-            <p class="text-muted">目前沒有特色產品，請透過管理介面添加產品。</p>
+            <p>目前沒有特色產品，請透過管理介面添加產品。</p>
         {% endfor %}
     </div>
-    <a href="{% url 'store:product_list' %}" class="btn btn-primary mt-3">瀏覽所有產品</a>
+
+    <div class="text-center mt-4">
+        <a href="{% url 'store:product_list' %}" class="btn btn-primary">瀏覽所有產品</a>
+    </div>
 </div>
 {% endblock %}

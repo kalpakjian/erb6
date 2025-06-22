@@ -26,6 +26,7 @@ INSTALLED_APPS = [
     'cloudinary_storage',
     'store.apps.StoreConfig',
     'accounts.apps.AccountsConfig',  # 新增 accounts app
+    'widget_tweaks',  # 用於自訂表單樣式
 ]
 
 MIDDLEWARE = [
