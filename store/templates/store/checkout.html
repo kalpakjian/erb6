@@ -5,8 +5,7 @@
 {% block title %}結帳 - Gundam 商店{% endblock %}
 
 {% block content %}
-<div class="container mt-4">
-    <h1 class="page-title">結帳</h1>
+    <h2>結帳</h2>
 
     {% if messages %}
         <div class="alert alert-info">
@@ -17,26 +16,26 @@
     {% endif %}
 
     {% if cart.items.exists %}
-        <h2 class="section-title">訂單摘要</h2>
-        <table class="table table-bordered cart-table">
+        <h3>訂單摘要</h3>
+        <table class="table">
             <thead>
                 <tr>
-                    <th scope="col" style="width: 30%;">商品</th>
-                    <th scope="col" style="width: 15%;">圖片</th>
-                    <th scope="col" style="width: 20%;">單價</th>
-                    <th scope="col" style="width: 15%;">數量</th>
-                    <th scope="col" style="width: 20%;">小計</th>
+                    <th>商品</th>
+                    <th>圖片</th>
+                    <th>單價</th>
+                    <th>數量</th>
+                    <th>小計</th>
                 </tr>
             </thead>
             <tbody>
                 {% for item in cart.items.all %}
                     <tr>
                         <td>{{ item.product.name }}</td>
-                        <td class="cart-image-cell">
+                        <td>
                             {% if item.product.get_cover_url %}
-                                <img src="{{ item.product.get_cover_url }}" alt="{{ item.product.name }}" class="cart-item-image">
+                                <img src="{{ item.product.get_cover_url }}" alt="{{ item.product.name }}" width="100">
                             {% else %}
-                                <img src="{% static 'images/no-image.png' %}" alt="無圖片" class="cart-item-image">
+                                <img src="{% static 'images/no-image.png' %}" alt="無圖片" width="100">
                             {% endif %}
                         </td>
                         <td>
@@ -52,27 +51,22 @@
                 {% endfor %}
             </tbody>
         </table>
+        <p><strong>總金額：</strong>{{ cart.items.all|sum_items_price|floatformat:2 }} 元</p>
 
-        <h3 class="total-amount">總金額：{{ cart.items.all|sum_items_price|floatformat:2 }} 元</h3>
-
-        <form method="post" class="mt-4" action="{% url 'store:checkout' %}">
+        <form method="POST" action="{% url 'store:checkout' %}">
             {% csrf_token %}
-            <div class="mb-3">
-                <label for="address" class="form-label">送貨地址</label>
-                {% if user.is_authenticated %}
-                    <input type="text" class="form-control cart-input" id="address" name="shipping_address" value="{% if user.profile.address %}{{ user.profile.address }}{% else %}王子大廈801{% endif %}" required>
-                {% else %}
-                    <input type="text" class="form-control cart-input" id="address" name="shipping_address" value="王子大廈801" required>
+            <div class="form-group">
+                <label for="shipping_address">送貨地址</label>
+                <textarea name="shipping_address" class="form-control" rows="4" {% if not user.is_authenticated %}required{% endif %}>{{ default_address }}</textarea>
+                {% if user.is_authenticated and default_address %}
+                    <small class="form-text text-muted">已預填您的個人資料地址，您可直接提交或修改。</small>
                 {% endif %}
             </div>
-            <div class="d-flex justify-content-between">
-                <button type="submit" class="btn btn-primary btn-lg">確認訂單</button>
-                <a href="{% url 'store:cart' %}" class="btn btn-secondary btn-lg">返回購物車</a>
-            </div>
+            <button type="submit" class="btn btn-primary">確認訂單</button>
+            <a href="{% url 'store:cart' %}" class="btn btn-secondary">返回購物車</a>
         </form>
     {% else %}
-        <p class="empty-cart">購物車目前為空。</p>
-        <a href="{% url 'store:product_list' %}" class="btn btn-primary btn-lg">瀏覽產品</a>
+        <p>購物車目前為空。</p>
+        <a href="{% url 'store:product_list' %}" class="btn btn-primary">瀏覽產品</a>
     {% endif %}
-</div>
 {% endblock %}

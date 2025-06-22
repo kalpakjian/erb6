@@ -15,6 +15,7 @@ from django.core.validators import FileExtensionValidator
 from .models import Product, Category, ProductImage, Cart, CartItem, Order, OrderItem
 from accounts.models import UserProfile
 import cloudinary.uploader
+from django.db import transaction
 
 # 設置日誌
 logger = logging.getLogger(__name__)
@@ -289,57 +290,104 @@ def remove_from_cart(request, item_id):
 
 # 結帳
 def checkout(request):
+    # 確保 session_key 存在
     session_key = request.session.session_key
     if not session_key:
         request.session.create()
         session_key = request.session.session_key
-    cart = get_object_or_404(Cart, user=request.user if request.user.is_authenticated else None, session_key=session_key)
+    logger.debug(f"Session key: {session_key}, User: {request.user if request.user.is_authenticated else 'Anonymous'}")
+
+    # 動態查詢或創建購物車
+    if request.user.is_authenticated:
+        cart, created = Cart.objects.get_or_create(
+            user=request.user,
+            defaults={'session_key': session_key}
+        )
+    else:
+        cart, created = Cart.objects.get_or_create(
+            session_key=session_key,
+            defaults={'user': None}
+        )
+    logger.debug(f"Cart: {cart}, Created: {created}")
+
+    # 獲取預設地址（僅限登錄用戶）
+    default_address = ''
+    if request.user.is_authenticated:
+        try:
+            default_address = request.user.userprofile.address
+        except UserProfile.DoesNotExist:
+            from accounts.models import UserProfile
+            UserProfile.objects.create(user=request.user)
+
     if request.method == 'POST':
-        shipping_address = request.POST.get('shipping_address')
-        if not shipping_address:
-            messages.error(request, '請輸入送貨地址！')
-            return render(request, 'store/checkout.html', {'cart': cart})
+        # 檢查購物車是否為空
         if not cart.items.exists():
             messages.error(request, '購物車為空！')
-            return render(request, 'store/checkout.html', {'cart': cart})
-        
+            return render(request, 'store/checkout.html', {'cart': cart, 'default_address': default_address})
+
         # 檢查庫存
         for item in cart.items.all():
             if item.product.stock < item.quantity:
                 messages.error(request, f'{item.product.name} 庫存不足，僅剩 {item.product.stock} 件！')
-                return render(request, 'store/checkout.html', {'cart': cart})
+                return render(request, 'store/checkout.html', {'cart': cart, 'default_address': default_address})
 
-        # 計算總價（考慮折扣價）
+        # 獲取送貨地址
+        shipping_address = request.POST.get('shipping_address', '').strip()
+        if request.user.is_authenticated and not shipping_address:
+            # 登錄用戶：使用 UserProfile.address 作為預設值
+            try:
+                shipping_address = request.user.userprofile.address
+            except UserProfile.DoesNotExist:
+                pass
+
+        if not shipping_address:
+            messages.error(request, '請輸入送貨地址！')
+            return render(request, 'store/checkout.html', {'cart': cart, 'default_address': default_address})
+
+        # 可選：如果登錄用戶提交新地址，更新 UserProfile
+        if request.user.is_authenticated and shipping_address != request.user.userprofile.address:
+            try:
+                request.user.userprofile.address = shipping_address
+                request.user.userprofile.save()
+                logger.info(f"Updated UserProfile.address for {request.user.username} to {shipping_address}")
+            except UserProfile.DoesNotExist:
+                from accounts.models import UserProfile
+                UserProfile.objects.create(user=request.user, address=shipping_address)
+
+        # 計算總價
         total_price = sum(item.get_subtotal() for item in cart.items.all())
-        
-        # 創建訂單
-        order = Order.objects.create(
-            user=request.user if request.user.is_authenticated else None,
-            session_key=session_key,
-            shipping_address=shipping_address,
-            total_price=total_price,
-            status='pending'
-        )
-        
-        # 創建訂單項目並更新庫存
-        for item in cart.items.all():
-            price = item.product.discount_price if item.product.discount_price else item.product.price
-            OrderItem.objects.create(
-                order=order,
-                product=item.product,
-                quantity=item.quantity,
-                price=price
+
+        # 創建訂單（使用事務確保數據一致性）
+        with transaction.atomic():
+            order = Order.objects.create(
+                user=request.user if request.user.is_authenticated else None,
+                session_key=session_key,
+                shipping_address=shipping_address,
+                total_price=total_price,
+                status='pending'
             )
-            item.product.stock -= item.quantity
-            item.product.save()
-        
-        # 清空購物車
-        cart.items.all().delete()
+
+            # 創建訂單項目並更新庫存
+            for item in cart.items.all():
+                price = item.product.discount_price if item.product.discount_price else item.product.price
+                OrderItem.objects.create(
+                    order=order,
+                    product=item.product,
+                    quantity=item.quantity,
+                    price=price
+                )
+                item.product.stock -= item.quantity
+                item.product.save()
+
+            # 清空購物車
+            cart.items.all().delete()
+
         messages.success(request, '訂單已提交！')
         return redirect('store:orders')
-    
+
     context = {
         'cart': cart,
+        'default_address': default_address,
         'login_form': AuthenticationForm(),
         'register_form': UserCreationForm()
     }
