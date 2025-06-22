@@ -22,9 +22,15 @@ logger = logging.getLogger(__name__)
 
 # 首頁
 def home(request):
+    # 獲取特色產品（隨機三個有折扣的產品）
     featured_products = Product.objects.filter(discount_price__isnull=False).order_by('?')[:3]
+    
+    # 獲取最新加入的五個產品，排除特色產品
+    latest_products = Product.objects.exclude(id__in=featured_products.values('id')).order_by('-created_at')[:5]
+    
     context = {
         'featured_products': featured_products,
+        'latest_products': latest_products,
         'login_form': AuthenticationForm(),
         'register_form': UserCreationForm()
     }
@@ -393,7 +399,7 @@ def checkout(request):
     }
     return render(request, 'store/checkout.html', context)
 
-# 用 Fid個人資料
+# 用戶個人資料
 @login_required
 def profile_view(request):
     # 確保 UserProfile 存在

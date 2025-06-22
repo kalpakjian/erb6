@@ -4,28 +4,77 @@
 {% block title %}Gundam 商店 - 首頁{% endblock %}
 
 {% block extra_css %}
+<style>
+    .carousel-container {
+        max-width: 1200px; /* 假設三個產品卡片總寬度約為1200px */
+        margin: 0 auto;
+        padding: 20px 0;
+    }
+    .carousel-item img {
+        width: 100%;
+        height: auto;
+        aspect-ratio: 21 / 9; /* 保持 21:9 比例 */
+        object-fit: cover;
+    }
+    .card-img-top {
+        width: 100%;
+        height: auto;
+        aspect-ratio: 16 / 10; /* 產品卡片圖片 16:10 比例 */
+        object-fit: cover;
+    }
+</style>
 {% endblock %}
 
 {% block content %}
-<div class="container mt-4">
-    <h1>歡迎來到 Gundam 線上商店</h1>
+<div class="container">
+    <h1 class="text-center my-4">歡迎來到 Gundam 商店</h1>
 
-    <h2 class="mt-4">特色產品</h2>
+    <!-- 走馬燈 Banner -->
+    <div class="carousel-container">
+        <div id="featuredCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="5000">
+            <div class="carousel-inner">
+                {% for product in latest_products %}
+                    <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                        <a href="{% url 'store:product_detail' product.id %}">
+                            {% if product.get_cover_url %}
+                                <img src="{{ product.get_cover_url }}" class="d-block w-100" alt="{{ product.name }}">
+                            {% else %}
+                                <img src="{% static 'images/no-image.png' %}" class="d-block w-100" alt="無圖片">
+                            {% endif %}
+                        </a>
+                    </div>
+                {% empty %}
+                    <div class="carousel-item active">
+                        <img src="{% static 'images/no-image.png' %}" class="d-block w-100" alt="無圖片">
+                    </div>
+                {% endfor %}
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#featuredCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">上一張</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#featuredCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">下一張</span>
+            </button>
+        </div>
+    </div>
+
+    <h2 class="text-center my-4">特色產品</h2>
+    
     <div class="row">
         {% for product in featured_products %}
             <div class="col-md-4 mb-4">
                 <div class="card h-100">
-                    <a href="{% url 'store:product_detail' product.pk %}">
+                    <div class="card-img-top">
                         {% if product.get_cover_url %}
-                            <img src="{{ product.get_cover_url }}" class="card-img-top img-fluid" alt="{{ product.name }}" style="height: 200px; object-fit: cover;">
+                            <img src="{{ product.get_cover_url }}" class="card-img-top" alt="{{ product.name }}">
                         {% else %}
-                            <img src="{% static 'images/no-image.png' %}" class="card-img-top img-fluid" alt="無圖片" style="height: 200px; object-fit: cover;">
+                            <img src="{% static 'images/no-image.png' %}" class="card-img-top" alt="無圖片">
                         {% endif %}
-                    </a>
+                    </div>
                     <div class="card-body">
-                        <h5 class="card-title">
-                            <a href="{% url 'store:product_detail' product.pk %}">{{ product.name }}</a>
-                        </h5>
+                        <h5 class="card-title">{{ product.name }}</h5>
                         {% if product.scale %}
                             <p class="card-text">{{ product.scale }}</p>
                         {% endif %}
@@ -34,18 +83,18 @@
                                 <span class="text-muted text-decoration-line-through">{{ product.price }} 元</span>
                                 <span class="text-danger">{{ product.discount_price }} 元</span>
                             {% else %}
-                                <span>{{ product.price }} 元</span>
+                                {{ product.price }} 元
                             {% endif %}
                         </p>
                     </div>
                 </div>
             </div>
         {% empty %}
-            <p>目前沒有特色產品，請透過管理介面添加產品。</p>
+            <p class="text-center">目前沒有特色產品，請透過管理介面添加產品。</p>
         {% endfor %}
     </div>
 
-    <div class="text-center mt-4">
+    <div class="text-center my-4">
         <a href="{% url 'store:product_list' %}" class="btn btn-primary">瀏覽所有產品</a>
     </div>
 </div>
