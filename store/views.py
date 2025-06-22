@@ -25,8 +25,8 @@ def home(request):
     # 獲取特色產品（隨機三個有折扣的產品）
     featured_products = Product.objects.filter(discount_price__isnull=False).order_by('?')[:3]
     
-    # 獲取最新加入的五個產品，排除特色產品
-    latest_products = Product.objects.exclude(id__in=featured_products.values('id')).order_by('-created_at')[:5]
+    # 獲取最新的五個產品（不排除特價產品）
+    latest_products = Product.objects.order_by('-created_at')[:5]
     
     context = {
         'featured_products': featured_products,

@@ -8,7 +8,7 @@
     .carousel-container {
         max-width: 1200px; /* 假設三個產品卡片總寬度約為1200px */
         margin: 0 auto;
-        padding: 20px 0;
+        padding: 10px 0; /* 減少上下內邊距，從 20px 改為 10px */
     }
     .carousel-item img {
         width: 100%;
@@ -21,6 +21,27 @@
         height: auto;
         aspect-ratio: 16 / 10; /* 產品卡片圖片 16:10 比例 */
         object-fit: cover;
+        transition: transform 0.3s ease; /* 平滑放大效果 */
+    }
+    .card-img-top:hover {
+        transform: scale(1.05); /* 鼠標懸停放大 1.05 倍 */
+    }
+    .card-img-container {
+        position: relative; /* 為圖標定位提供相對容器 */
+        overflow: visible; /* 確保圖標不被裁切 */
+    }
+    .scale-icon {
+        position: absolute;
+        bottom: -50px; /* 圖標位於圖片下方 50px */
+        right: 10px; /* 右對齊 */
+        width: 60px; /* 圖標大小 */
+        background-color: white; /* 背景避免重疊 */
+        padding: 4px; /* 內邊距 */
+        border-radius: 3px;
+        z-index: 10; /* 確保圖標在圖片上方 */
+    }
+    .card-body {
+        text-align: left; /* 文字左對齊 */
     }
 </style>
 {% endblock %}
@@ -66,18 +87,20 @@
         {% for product in featured_products %}
             <div class="col-md-4 mb-4">
                 <div class="card h-100">
-                    <div class="card-img-top">
-                        {% if product.get_cover_url %}
-                            <img src="{{ product.get_cover_url }}" class="card-img-top" alt="{{ product.name }}">
-                        {% else %}
-                            <img src="{% static 'images/no-image.png' %}" class="card-img-top" alt="無圖片">
+                    <div class="card-img-container">
+                        <a href="{% url 'store:product_detail' product.id %}">
+                            {% if product.get_cover_url %}
+                                <img src="{{ product.get_cover_url }}" class="card-img-top" alt="{{ product.name }}">
+                            {% else %}
+                                <img src="{% static 'images/no-image.png' %}" class="card-img-top" alt="無圖片">
+                            {% endif %}
+                        </a>
+                        {% if product.scale %}
+                            <img src="{{ product.get_scale_icon }}" alt="{{ product.scale }}" class="scale-icon">
                         {% endif %}
                     </div>
                     <div class="card-body">
                         <h5 class="card-title">{{ product.name }}</h5>
-                        {% if product.scale %}
-                            <p class="card-text">{{ product.scale }}</p>
-                        {% endif %}
                         <p class="card-text">
                             {% if product.discount_price %}
                                 <span class="text-muted text-decoration-line-through">{{ product.price }} 元</span>
