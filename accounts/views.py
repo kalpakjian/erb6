@@ -1,3 +1,4 @@
+# accounts/views.py
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -21,10 +22,12 @@ def register_view(request):
     if request.method == 'POST':
         form = UserRegisterForm(request.POST)
         if form.is_valid():
-            form.save()
+            form.save()  # UserCreationForm 會自動保存用戶並哈希密碼
             username = form.cleaned_data.get('username')
             messages.success(request, f'帳戶 {username} 已創建，請登入。')
             return redirect('accounts:login')
+        else:
+            return render(request, 'accounts/register.html', {'form': form})
     else:
         form = UserRegisterForm()
     return render(request, 'accounts/register.html', {'form': form})

@@ -1,3 +1,4 @@
+<!-- store/templates/store/cart.html -->
 {% extends 'store/base.html' %}
 {% load store_tags %}
 {% load static %}
@@ -5,8 +6,7 @@
 {% block title %}購物車 - Gundam 商店{% endblock %}
 
 {% block content %}
-<div class="container mt-4">
-    <h1 class="page-title">購物車</h1>
+    <h2>購物車</h2>
 
     {% if messages %}
         <div class="alert alert-info">
@@ -17,27 +17,27 @@
     {% endif %}
 
     {% if cart.items.exists %}
-        <form method="post" action="{% url 'store:update_cart' %}">
+        <form method="POST" action="{% url 'store:update_cart' %}">
             {% csrf_token %}
-            <table class="table table-bordered cart-table">
+            <table class="table">
                 <thead>
                     <tr>
-                        <th scope="col" style="width: 30%;">商品</th>
-                        <th scope="col" style="width: 15%;">圖片</th>
-                        <th scope="col" style="width: 20%;">單價</th>
-                        <th scope="col" style="width: 15%;">數量</th>
-                        <th scope="col" style="width: 20%;">小計</th>
+                        <th>商品</th>
+                        <th>圖片</th>
+                        <th>單價</th>
+                        <th>數量</th>
+                        <th>小計</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for item in cart.items.all %}
                         <tr>
                             <td>{{ item.product.name }}</td>
-                            <td class="cart-image-cell">
+                            <td>
                                 {% if item.product.get_cover_url %}
-                                    <img src="{{ item.product.get_cover_url }}" alt="{{ item.product.name }}" class="cart-item-image">
+                                    <img src="{{ item.product.get_cover_url }}" alt="{{ item.product.name }}" width="100">
                                 {% else %}
-                                    <img src="{% static 'images/no-image.png' %}" alt="無圖片" class="cart-item-image">
+                                    <img src="{% static 'images/no-image.png' %}" alt="無圖片" width="100">
                                 {% endif %}
                             </td>
                             <td>
@@ -48,7 +48,7 @@
                                 {% endif %}
                             </td>
                             <td>
-                                <input type="number" class="form-control cart-input" name="quantity_{{ item.id }}" value="{{ item.quantity }}" min="1" style="width: 80px;">
+                                <input type="number" name="quantity_{{ item.id }}" value="{{ item.quantity }}" min="1" max="{{ item.product.stock }}" class="form-control" style="width: 100px;">
                             </td>
                             <td>{{ item.get_subtotal|floatformat:2 }} 元</td>
                         </tr>
@@ -56,16 +56,13 @@
                 </tbody>
             </table>
 
-            <h3 class="total-amount">總金額：{{ cart.items.all|sum_items_price|floatformat:2 }} 元</h3>
+            <p><strong>總金額：</strong>{{ cart.items.all|sum_items_price|floatformat:2 }} 元</p>
 
-            <div class="d-flex justify-content-between mt-4">
-                <button type="submit" class="btn btn-primary btn-lg">更新購物車</button>
-                <a href="{% url 'store:checkout' %}" class="btn btn-success btn-lg">前往結帳</a>
-            </div>
+            <button type="submit" class="btn btn-primary">更新購物車</button>
+            <a href="{% url 'store:checkout' %}" class="btn btn-success">前往結帳</a>
         </form>
     {% else %}
-        <p class="empty-cart">購物車目前為空。</p>
-        <a href="{% url 'store:product_list' %}" class="btn btn-primary btn-lg">瀏覽產品</a>
+        <p>購物車目前為空。</p>
+        <a href="{% url 'store:product_list' %}" class="btn btn-primary">瀏覽產品</a>
     {% endif %}
-</div>
 {% endblock %}

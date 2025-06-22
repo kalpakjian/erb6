@@ -1,22 +1,23 @@
+# accounts/forms.py
 from django import forms
 from django.contrib.auth.models import User
+from django.contrib.auth.forms import UserCreationForm
 from .models import UserProfile
 
-class UserRegisterForm(forms.ModelForm):
-    password = forms.CharField(widget=forms.PasswordInput)
-    password_confirm = forms.CharField(widget=forms.PasswordInput, label='確認密碼')
+class UserRegisterForm(UserCreationForm):
+    email = forms.EmailField(required=False, label='電子郵件')  # 使 email 可選
+    password1 = forms.CharField(widget=forms.PasswordInput, label='密碼')
+    password2 = forms.CharField(widget=forms.PasswordInput, label='確認密碼')
 
     class Meta:
         model = User
-        fields = ['username', 'email', 'password']
+        fields = ['username', 'email', 'password1', 'password2']
 
-    def clean(self):
-        cleaned_data = super().clean()
-        password = cleaned_data.get('password')
-        password_confirm = cleaned_data.get('password_confirm')
-        if password and password_confirm and password != password_confirm:
-            raise forms.ValidationError('密碼不匹配。')
-        return cleaned_data
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        if email and User.objects.filter(email=email).exists():
+            raise forms.ValidationError('此電子郵件已被使用。')
+        return email
 
 class UserProfileForm(forms.ModelForm):
     class Meta:
